@@ -15,21 +15,192 @@
 # Nota: le strutture dati devono sempre essere implementate nel progetto; non si possono utilizzare librerie sviluppate da altri o copiare codice di altri
 
 # import per la serializzazione e deserializzazione degli oggetti su disco.
-import pickle
+import pickle as pk
 import os
+import numpy as np
+import matplotlib.pyplot as plt
+import random
+# import per il benchmarking
+from timeit import default_timer as timer
+
+favorite_color = {"lion": "yellow", "kitty": "red"}
+pk.dump(favorite_color, open("save.p", "wb"))
+
+
 
 # Albero binario di ricerca:
 class BinaryTreeNode:
     def __init__(self, key):
         self.key = key
+        self.parent = None
         self.left = None
         self.right = None
-        self.parent = None
         self.leaf = True
+
+    def getKey(self):
+        return self.key
+    def setKey(self, key):
+        self.key = key
+
+    def getParent(self):
+        return self.parent
+
+    def getLeft(self):
+        return self.left
+
+    def getRight(self):
+        return self.right
+
+    def getChildren(self):
+        return self.left, self.right
+
+    def toString(self):
+        return str(self.key)
+
 
 class BinaryTree:
     def __init__(self):
         self.root = None
+        self.size = 0
+
+    def getRoot(self):
+        return self.root
+    def setRoot(self, node):
+        self.root = node
+    def getSize(self):
+        return self.size
+    def setSize(self, size):
+        self.size = size
+    def isEmpty(self):
+        return self.size == 0
+    def getSuccessor(self, currentNode):
+        if currentNode.getRight() is not None:
+            return self.min(currentNode.getRight())
+        else:
+            while currentNode.getParent() is not None and currentNode.getParent().getRight() == currentNode:
+                currentNode = currentNode.getParent()
+            return currentNode.getParent()
+
+    def getPredecessor(self, currentNode):
+        if currentNode.getLeft() is not None:
+            return self.max(currentNode.getLeft())
+        else:
+            while currentNode.getParent() is not None and currentNode.getParent().getLeft() == currentNode:
+                currentNode = currentNode.getParent()
+            return currentNode.getParent()
+
+    # Funzione per inserire una chiave in un albero
+    def insert(self, key):
+        if self.root is None:
+            self.root = BinaryTreeNode(key)
+            self.size += 1
+        else:
+            self.insertNode(self.root, key)
+            self.size += 1
+    # Funzione per inserire una chiave in un nodo non pieno
+    def insertNode(self, currentNode, key):
+        if currentNode.getKey() > key:
+            if currentNode.getLeft() is None:
+                currentNode.left = BinaryTreeNode(key)
+                currentNode.left.parent = currentNode
+            else:
+                self.insertNode(currentNode.getLeft(), key)
+        else:
+            if currentNode.getRight() is None:
+                currentNode.right = BinaryTreeNode(key)
+                currentNode.right.parent = currentNode
+            else:
+                self.insertNode(currentNode.getRight(), key)
+
+    # Funzione per cercare una chiave in un albero
+    def search(self, key):
+        if self.root is None:
+            return False
+        else:
+            return self.searchNode(self.root, key)
+
+    # Funzione per cercare una chiave in un nodo
+    def searchNode(self, currentNode, key):
+        if currentNode is None:
+            return False
+        elif currentNode.getKey() == key:
+            return True
+        elif currentNode.getKey() > key:
+            return self.searchNode(currentNode.getLeft(), key)
+        else:
+            return self.searchNode(currentNode.getRight(), key)
+
+    # Funzione per cancellare una chiave in un albero
+    def delete(self, key):
+        if self.root is None:
+            return False
+        else:
+            return self.deleteNode(self.root, key)
+
+    # Funzione per cancellare una chiave in un nodo
+    def deleteNode(self, currentNode, key):
+        if currentNode is None:
+            return False
+        elif currentNode.getKey() == key:
+            if currentNode.getLeft() is None and currentNode.getRight() is None:
+                if currentNode.getParent().getLeft() == currentNode:
+                    currentNode.getParent().left = None
+                else:
+                    currentNode.getParent().right = None
+                return True
+            elif currentNode.getLeft() is None:
+                if currentNode.getParent().getLeft() == currentNode:
+                    currentNode.getParent().left = currentNode.getRight()
+                else:
+                    currentNode.getParent().right = currentNode.getRight()
+                return True
+            elif currentNode.getRight() is None:
+                if currentNode.getParent().getLeft() == currentNode:
+                    currentNode.getParent().left = currentNode.getLeft()
+                else:
+                    currentNode.getParent().right = currentNode.getLeft()
+                return True
+            else:
+                successor = self.getSuccessor(currentNode)
+                currentNode.setKey(successor.getKey())
+                self.deleteNode(successor, successor.getKey())
+                return True
+        elif currentNode.getKey() > key:
+            return self.deleteNode(currentNode.getLeft(), key)
+        else:
+            return self.deleteNode(currentNode.getRight(), key)
+
+    def inorderTreeWalk(self, currentNode = self.root):
+        if currentNode is None:
+            return
+        else:
+            self.inorderTreeWalk(currentNode.getLeft())
+            print(currentNode.getKey())
+            self.inorderTreeWalk(currentNode.getRight())
+
+    def reverseInorderTreeWalk(self, currentNode = self.root):
+        if currentNode is None:
+            return
+        else:
+            self.reverseInorderTreeWalk(currentNode.getRight())
+            print(currentNode.getKey())
+            self.reverseInorderTreeWalk(currentNode.getLeft())
+    def min(self, currentNode=self.root):
+        if currentNode.getLeft() is None:
+            return currentNode
+        else:
+            return self.min(currentNode.getLeft())
+
+    def max(self, currentNode = self.root):
+        if currentNode.getRight() is None:
+            return currentNode
+        else:
+            return self.max(currentNode.getRight())
+
+
+
+
+
 
 # B-Albero:
 class BTreeNode:
