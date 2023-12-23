@@ -153,4 +153,6 @@ cython_debug/
 .DS_Store
 *.xml
 tree.dat
-LabAlgoritmiEs2.ipynb
+es-2-MARGHE.ipynb
+es-2-LORE.ipynb
+/es-1-MARGHE/
