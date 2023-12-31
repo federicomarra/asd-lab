@@ -360,8 +360,7 @@ if __name__ == '__main__':
 
     # Test
     for i in range(len(ts)):
-        #t = ts[i]
-        t = 250
+        t = ts[i]
         print(f"\nTest {i + 1}: t = ", t)
         # Reset delle liste tempi per un certo t
 
