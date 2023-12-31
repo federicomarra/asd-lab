@@ -42,7 +42,6 @@ class BinaryTreeNode:
         self.right = None
         self.p = None
 
-
 class BinaryTree:
     def __init__(self):
         self.node = BinaryTreeNode(0)
@@ -70,19 +69,6 @@ class BinaryTree:
             self.node_read += 1
             return self.search(x.right, key)
 
-    def find_node(self, currentNode, key):
-        if currentNode is None:
-            return False
-        elif key == currentNode.key:
-            self.node_read += 1
-            return True
-        elif key < currentNode.key:
-            self.node_read += 1
-            return self.find_node(currentNode.left, key)
-        elif key > currentNode.key:
-            self.node_read += 1
-            return self.find_node(currentNode.right, key)
-
     # insert
     def insert(self, z):
         y = None
@@ -103,44 +89,6 @@ class BinaryTree:
             y.right = z
         self.node_written += 1
         return z
-
-    def min(self, x):
-        if x.left is None:
-            return x
-        else:
-            return self.min(x.left)
-
-    def max(self, x):
-        if x.right is None:
-            return x
-        else:
-            return self.max(x.right)
-
-    def transplant(self, u, v):
-        if u.p is None:
-            self.root = v
-        elif u == u.p.left:
-            u.p.left = v
-        else:
-            u.p.right = v
-        if v is not None:
-            v.p = u.p
-
-    def delete(self, key):
-        z = self.search(self.root, key)
-        if z.left is None:
-            self.transplant(z, z.right)
-        elif z.right is None:
-            self.transplant(z, z.left)
-        else:
-            y = self.min(z.right)
-            if y.p != z:
-                self.transplant(y, y.right)
-                y.right = z.right
-                y.right.p = y
-            self.transplant(z, y)
-            y.left = z.left
-            y.left.p = y
 
 
 # B-Albero:
@@ -233,77 +181,6 @@ class BTree:
                     i += 1
             self.insert_nonfull(x.child[i], k)
 
-    def delete(self, key):
-        node, index = self.search(key)
-        if node is not None:
-            if node.leaf:
-                self.delete_from_leaf(node, index)
-            else:
-                self.delete_from_non_leaf(node, index)
-        else:
-            print("The key %d is does not exist in the tree" % key)
-
-    def delete_from_leaf(self, node, index):
-        for i in range(index + 1, node.n):
-            node.keys[i - 1] = node.keys[i]
-        node.n -= 1
-        node.node_written += 1
-
-    def delete_from_non_leaf(self, node, index):
-        key = node.keys[index]
-        if node.child[index].n >= self.t:
-            pred = self.get_predecessor(node, index)
-            node.keys[index] = pred
-            self.delete_from_leaf(node.child[index], pred)
-        elif node.child[index + 1].n >= self.t:
-            succ = self.get_successor(node, index)
-            node.keys[index] = succ
-            self.delete_from_leaf(node.child[index + 1], succ)
-        else:
-            self.merge(node, index)
-            self.delete_from_non_leaf(node.child[index], key)
-
-    def print(self, x, l=0):
-        print("Level ", l, " ", len(x.keys), end=":")
-        for i in x.keys:
-            print(i, end=" ")
-        print()
-        l += 1
-        if len(x.child) > 0:
-            for i in x.child:
-                self.print(i, l)
-
-    def merge(self, node, index):
-        child = node.child[index]
-        sibling = node.child[index + 1]
-        child.keys[self.t - 1] = node.keys[index]
-        for i in range(sibling.n):
-            child.keys[i + self.t] = sibling.keys[i]
-        if not child.leaf:
-            for i in range(sibling.n + 1):
-                child.child[i + self.t] = sibling.child[i]
-        for i in range(index + 1, node.n):
-            node.keys[i - 1] = node.keys[i]
-        for i in range(index + 2, node.n + 1):
-            node.child[i - 1] = node.child[i]
-        child.n += sibling.n + 1
-        node.n -= 1
-        node.node_written += 1
-        child.node_written += 1
-        sibling.node_written += 1
-
-    def get_predecessor(self, node, index):
-        node = node.child[index]
-        while not node.leaf:
-            node = node.child[node.n]
-        return node.keys[node.n - 1]
-
-    def get_successor(self, node, index):
-        node = node.child[index + 1]
-        while not node.leaf:
-            node = node.child[0]
-        return node.keys[0]
-
 
 # Creazione di un array randomico di n elementi
 def random_array(n):
@@ -311,13 +188,11 @@ def random_array(n):
 
 
 def test_search(BinaryTree, BTree, array):
-    print(f"\nTempi di ricerca di {len(array)} elementi:")
+    print(f"\nRicerca di {len(array)} elementi:")
 
     timesBin = 0
     timesBT = 0
     for i in range(len(array)):
-        #print(f"{array[i]} ({i + 1}° elemento)")
-
         start = timer()
         BinaryTree.search(BinaryTree.root, array[i])
         end = timer()
@@ -328,19 +203,24 @@ def test_search(BinaryTree, BTree, array):
         end = timer()
         timesBT += (end - start) * 1000
 
+    readBin = BinaryTree.get_node_read()
+    writtenBin = BinaryTree.get_node_written()
+    readBT = BTree.get_node_read()
+    writtenBT = BTree.get_node_written()
+
     print(f"Albero binario di ricerca: {timesBin} ms")
     print(f"B-albero: {timesBT} ms")
+    print(f"Albero binario di ricerca: {readBin} letture, {writtenBin} scritture")
+    print(f"B-albero: {readBT} letture, {writtenBT} scritture")
 
-    return timesBin, timesBT
+    return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 
 
 def test_insert(BinaryTree, BTree, array):
-    print(f"\nTempi di inserimento di {len(array)} elementi:")
+    print(f"\nInserimento di {len(array)} elementi:")
     timesBin = 0
     timesBT = 0
     for i in range(len(array)):
-        #print(f"{array[i]} ({i + 1}° elemento)")
-
         start = timer()
         BinaryTree.insert(BinaryTreeNode(array[i]))
         end = timer()
@@ -351,32 +231,17 @@ def test_insert(BinaryTree, BTree, array):
         end = timer()
         timesBT += (end - start) * 1000
 
-    print(f"Albero binario di ricerca: {timesBin} ms")
-    print(f"B-albero: {timesBT} ms")
-
-    return timesBin, timesBT
-
-
-def test_delete(BinaryTree, BTree, array):
-    print(f"\nTempi di cancellazione di {len(array)} elementi:")
-    timesBin = 0
-    timesBT = 0
-    for i in range(len(array)):
-        #print(f"{array[i]} ({i + 1}° elemento)")
-
-        start = timer()
-        BinaryTree.delete(array[i])
-        end = timer()
-        timesBin += (end - start) * 1000
-
-        start = timer()
-        BTree.delete(array[i])
-        end = timer()
-        timesBT += (end - start) * 1000
+    readBin = BinaryTree.get_node_read()
+    writtenBin = BinaryTree.get_node_written()
+    readBT = BTree.get_node_read()
+    writtenBT = BTree.get_node_written()
 
     print(f"Albero binario di ricerca: {timesBin} ms")
     print(f"B-albero: {timesBT} ms")
-    return timesBin, timesBT
+    print(f"Albero binario di ricerca: {readBin} letture, {writtenBin} scritture")
+    print(f"B-albero: {readBT} letture, {writtenBT} scritture")
+
+    return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 
 
 def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "table"):
@@ -387,15 +252,19 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "
     plt.title(title)
 
     # Unisci le liste di dati come colonne al fine di creare un array bidimensionale di dati: 'data'
-    print(len(data[0]), len(data[1]), len(data[2]))
-    data = np.stack(tuple(data), axis=1)
-
-    # Intestazioni della tabella
-    headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
+    if len(data) == 3:
+        data = np.column_stack((data[0], data[1], data[2]))
+        headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
+    elif len(data) == 5:
+        data = np.column_stack((data[0], data[1], data[2], data[3], data[4]))
+        headers = ("N° elementi", "Lettura ABR", "Lettura BA", "Scrittura ABR", "Scrittura BA")
+    else:
+        data = np.stack(tuple(data), axis=len(data))
+        headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
 
     # Stile tabella
     ax.axis('off')
-    table = ax.table(cellText=data, colLabels=headers, loc='center', cellLoc='center')
+    table = ax.table(cellText=data, colLabels=headers, loc="center", cellLoc="center")
     table.auto_set_column_width(col=list(range(len(data))))
     table.scale(1, 1.5)
 
@@ -416,12 +285,9 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "
         table[cell].set_text_props(**text_props)
 
     #plt.show()
+
     # Salvataggio del grafico
-    dir = "plots/tables"
-    if not os.path.exists(dir):
-        os.makedirs(dir)
-    path = f"./plots/tables/{filename}.png"
-    fig.savefig(f"plots/table/{filename}.png", bbox_inches='tight')
+    fig.savefig(f"plots/tables/{filename}.png", bbox_inches='tight')
 
 
 def draw_side_graphs(left_data, right_data, plot_title, filename):
@@ -442,7 +308,7 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     #right.legend(handles=[legend2])
 
     fig.suptitle(plot_title, fontsize=16)
-    plt.show()
+    #plt.show()
 
     # salvataggio del grafico
     fig.savefig(f"./plots/side-graphs/{filename}.png", bbox_inches='tight')
@@ -457,7 +323,7 @@ def draw_comparison_graphs(data1, data2, title, filename):
     plot.set_ylabel(ylabel)
     plot.legend(handles=[legend1, legend2])
 
-    plt.show()
+    #plt.show()
 
     # salvataggio del grafico
     fig.savefig(f"./plots/comparison-graphs/{filename}.png", bbox_inches='tight')
@@ -465,33 +331,20 @@ def draw_comparison_graphs(data1, data2, title, filename):
 
 if __name__ == '__main__':
 
-    # Parametri step * nTests = 10000
-    #step, nTests = 100, 10
+    step, nTests = 50, 20
 
-    #step, nTests = 100, 100
+    #step, nTests = 10, 100
     #step, nTests = 200, 50
     #step, nTests = 500, 20
-    #step, nTests = 1000, 10
-    step, nTests = 2000, 5
 
     ts = [100, 250, 1000]
-
-    #ts = [20, 50, 100, 500, 1000]
-
-    #ts = [2, 3, 20, 50]
-    #ts = [2, 3, 5, 10]
-    #ts = [2, 3]
 
     # Creazione degli array randomici
     arrays = []
     for n in range(step, step * (nTests + 1), step):
         arrays.append(random_array(n))
 
-    # Inizializzazione liste alberi
-    BinaryTrees, BTrees = [], []
-    InsertTitle, SearchTitle, DeleteTitle = [], [], []
-    InsertData, SearchData, DeleteData = [], [], []
-    opname1, opname2, opname3 = "insert", "search", "delete"
+    opname1, opname2 = "insert", "search"
 
     x_axis = [n for n in range(step, step * (nTests + 1), step)]
     label1, color1 = "Albero Binario di Ricerca", "black"
@@ -506,69 +359,100 @@ if __name__ == '__main__':
             os.makedirs(dir)
 
     # Test
-    i = -1
-    for t in ts:
-        i += 1
+    for i in range(len(ts)):
+        #t = ts[i]
+        t = 250
         print(f"\nTest {i + 1}: t = ", t)
         # Reset delle liste tempi per un certo t
+
+        BinaryTrees, BTrees = [], []
+        InsertTimesTitle, SearchTimesTitle = [], []
+        InsertWRTitle, SearchWRTitle = [], []
+        InsertTimesData, SearchTimesData = [], []
+        InsertWRData, SearchWRData = [], []
         timesInsertBin, timesInsertBT = [], []
         timesSearchBin, timesSearchBT = [], []
-        timesDeleteBin, timesDeleteBT = [], []
+        readInsertBin, readInsertBT, writtenInsertBin, writtenInsertBT = [], [], [], []
+        readSearchBin, readSearchBT, writtenSearchBin, writtenSearchBT = [], [], [], []
+        j = -1
         for a in arrays:
+            j += 1
             # Inizializzazione alberi
             BinaryTrees.append(BinaryTree())
             BTrees.append(BTree(t))
 
-            # Test
-            tInsertBin, tInsertBT = test_insert(BinaryTrees[i], BTrees[i], a)
-            tSearchBin, tSearchBT = test_search(BinaryTrees[i], BTrees[i], a)
-            #tDeleteBin, tDeleteBT = test_delete(BinaryTrees[i], BTrees[i], a)
+            # Test inserimento
+            tInsertBin, tInsertBT, rInsertBin, rInsertBT, wInsertBin, wInsertBT = test_insert(BinaryTrees[j], BTrees[j], a)
             timesInsertBin.append(tInsertBin)
             timesInsertBT.append(tInsertBT)
+            readInsertBin.append(rInsertBin)
+            readInsertBT.append(rInsertBT)
+            writtenInsertBin.append(wInsertBin)
+            writtenInsertBT.append(wInsertBT)
+
+            # Test ricerca
+            tSearchBin, tSearchBT, rSearchBin, rSearchBT, wSearchBin, wSearchBT = test_search(BinaryTrees[j], BTrees[j], a)
             timesSearchBin.append(tSearchBin)
             timesSearchBT.append(tSearchBT)
-            #timesDeleteBin.append(tDeleteBin)
-            #timesDeleteBT.append(tDeleteBT)
+            readSearchBin.append(rSearchBin)
+            readSearchBT.append(rSearchBT)
+            writtenSearchBin.append(wSearchBin)
+            writtenSearchBT.append(wSearchBT)
 
         # end ciclo su t in ts
 
         # Creazione dei dati per le tabelle
-        InsertData.append([
+        InsertTimesData.append([
             [n for n in range(step, step * (nTests + 1), step)],
             ["{:.3e}".format(val) for val in timesInsertBin],
             ["{:.3e}".format(val) for val in timesInsertBT]
         ])
-        InsertTitle.append(f"Inserimento con t = {t}: tempi di esecuzione [ms]")
+        InsertTimesTitle.append(f"Inserimento con t = {t}: tempi di esecuzione [ms]")
 
-        SearchData.append([
+        InsertWRData.append([
+            [n for n in range(step, step * (nTests + 1), step)],
+            ["{:.3e}".format(val) for val in readInsertBin],
+            ["{:.3e}".format(val) for val in readInsertBT],
+            ["{:.3e}".format(val) for val in writtenInsertBin],
+            ["{:.3e}".format(val) for val in writtenInsertBT]
+        ])
+        InsertWRTitle.append(f"Inserimento con t = {t}: letture e scritture")
+
+        SearchTimesData.append([
             [n for n in range(step, step * (nTests + 1), step)],
             ["{:.3e}".format(val) for val in timesSearchBin],
             ["{:.3e}".format(val) for val in timesSearchBT]
         ])
-        SearchTitle.append(f"Ricerca con t = {t}: tempi di esecuzione [ms]")
+        SearchTimesTitle.append(f"Ricerca con t = {t}: tempi di esecuzione [ms]")
 
-        #DeleteData.append([
-        #    [n for n in range(step, step * (nTests + 1), step)],
-        #    ["{:.3e}".format(val) for val in timesDeleteBin],
-        #    ["{:.3e}".format(val) for val in timesDeleteBT]
-        #])
-        #DeleteTitle.append(f"Cancellazione con t = {t}: tempi di esecuzione [ms]")
+        SearchWRData.append([
+            [n for n in range(step, step * (nTests + 1), step)],
+            ["{:.3e}".format(val) for val in readSearchBin],
+            ["{:.3e}".format(val) for val in readSearchBT],
+            ["{:.3e}".format(val) for val in writtenSearchBin],
+            ["{:.3e}".format(val) for val in writtenSearchBT]
+        ])
+        SearchWRTitle.append(f"Ricerca con t = {t}: letture e scritture")
 
-        filename1 = f"{opname1}-t{t}"
-        filename2 = f"{opname2}-t{t}"
-        filename3 = f"{opname3}-t{t}"
+        filename1 = f"{opname1}-ms-t{t}"
+        filename2 = f"{opname2}-ms-t{t}"
+        filename3 = f"{opname1}-wr-t{t}"
+        filename4 = f"{opname2}-wr-t{t}"
 
         # Creazione delle tabelle
-        #draw_table(InsertData[i], InsertTitle[i], "green", "lightgreen", filestring1)
-        #draw_table(SearchData[i], InsertTitle[i], "purple", "pink", filestring2)
-        #draw_table(DeleteData[i], InsertTitle[i], "darkredred", "red" filestring3)
+        draw_table(InsertTimesData[i], InsertTimesTitle[i], "green", "lightgreen", filename1)
+        draw_table(SearchTimesData[i], InsertTimesTitle[i], "purple", "pink", filename2)
+        draw_table(InsertWRData[i], InsertWRTitle[i], "green", "lightgreen", filename3)
+        draw_table(SearchWRData[i], SearchWRTitle[i], "purple", "pink", filename4)
 
         # Creazione dei grafici
         draw_side_graphs(timesInsertBin, timesInsertBT, "Inserimento", filename1)
         draw_side_graphs(timesSearchBin, timesSearchBT, "Ricerca", filename2)
-        #draw_side_graphs(timesDeleteBin, timesDeleteBT, "Cancellazione", filestring3)
+        draw_side_graphs(readInsertBin, readInsertBT, "Inserimento: letture", filename3)
+        draw_side_graphs(readSearchBin, readSearchBT, "Ricerca: letture", filename4)
 
         # Confronto dei grafici
         draw_comparison_graphs(timesInsertBin, timesInsertBT, "Confronto inserimento", filename1)
         draw_comparison_graphs(timesSearchBin, timesSearchBT, "Confronto ricerca", filename2)
-        #draw_comparison_graphs(timesDeleteBin, timesDeleteBT, "Confronto cancellazione", filestring3)
+        draw_comparison_graphs(readInsertBin, readInsertBT, "Confronto inserimento: letture", filename3)
+        draw_comparison_graphs(readSearchBin, readSearchBT, "Confronto ricerca: letture", filename4)
