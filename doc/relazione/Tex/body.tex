@@ -39,7 +39,7 @@
     
 \end{tcolorbox}
 
-\section{Spiegazione teorica del problema - Esercizio A}
+\section{Spiegazione teorica del problema - Esercizio 1}
 
 \subsection{Introduzione}
 \label{sec:Introduzione_1}
@@ -47,7 +47,7 @@ In questo parte del progetto si descrive l'implementazione degli alberi binari d
 
 \subsection{Aspetti fondamentali}
 \label{sec:AspettiFondamentali_1}
-Nell'esperimento considereremo caso quello medio, ovvero una serie di numeri non ordinati, dunque in ordine casuale che vanno da n=step con $step=2000$ a ```step*nTests```, con $nTests=5$, arriverà fino a $2000*5=10000$. Dunque prenderemo la costruzione in modo casuale dell'albero (essenzialmente vuol dire che il numero che andrò ad inserire di volta in volta è casuale). Da qui in poi ci riferiremo agli alberi binari di ricerca come ABR e agli b-alberi come BA. Useremo anche alcune parti fondamentali della nomenclatura della teoria della complessità computazionale come $O(\cdot)$ e $\Theta(\cdot)$. Ci riferiremo anche ad $n$ come numero di nodi dell'albero ed ad $h = \log n$ come altezza dell'albero. Non utilizzeremo altre strutture dati particolari all'infuori degli alberi in questione. Descriviamo brevemente i metodi che andremo ad analizzare in particolare:
+Nell'esperimento considereremo caso quello medio, ovvero una serie di numeri non ordinati, dunque in ordine casuale che vanno da n=step con $step=50$ a ```step*nTests```, con $nTests=20$, arriverà fino a $50*20=1000$. Dunque prenderemo la costruzione in modo casuale dell'albero (essenzialmente vuol dire che il numero che andrò ad inserire di volta in volta è casuale). Da qui in poi ci riferiremo agli Alberi Binari di Ricerca come ABR e ai B-Alberi come BA. Useremo anche alcune parti fondamentali della nomenclatura della teoria della complessità computazionale come $O(\cdot)$ e $\Theta(\cdot)$. Ci riferiremo anche ad $n$ come numero di nodi dell'albero ed ad $h = \log _t n$ come altezza dell'albero. Non utilizzeremo altre strutture dati particolari all'infuori degli alberi in questione. Descriviamo brevemente i metodi che andremo ad analizzare in particolare:
 \begin{itemize}
     \item Inserimento
     \begin{itemize}
@@ -239,8 +239,8 @@ Con la seguente descrizione elencheremo i vari attributi delle classi che permet
     \begin{itemize}
         \item \textbf{node} : contiene nodo.
         \item \textbf{root} : è un puntatore alla radice.
-        \item \textbf{node_read} : contarore che tiene nota di quante letture vengono fatte sull'albero.
-        \item \textbf{node_written} : contarore che tiene nota di quante scritture vengono fatte sull'albero.
+        \item \textbf{node read} : contarore che tiene nota di quante letture vengono fatte sull'albero.
+        \item \textbf{node written} : contarore che tiene nota di quante scritture vengono fatte sull'albero.
     \end{itemize}
 
 \item \textbf{BTreeNode}
@@ -255,8 +255,8 @@ Con la seguente descrizione elencheremo i vari attributi delle classi che permet
     \begin{itemize}
         \item \textbf{root} : è un puntatore alla radice\textit{p}.
         \item \textbf{t} : numero minimo chiavi memorizzate in ogni nodo \textit{p}.
-        \item \textbf{node_read} : contarore che tiene nota di quante letture vengono fatte sull'albero \textit{p}.
-        \item \textbf{node_written} : contarore che tiene nota di quante scritture vengono fatte sull'albero\textit{p}.
+        \item \textbf{node read} : contarore che tiene nota di quante letture vengono fatte sull'albero \textit{p}.
+        \item \textbf{node written} : contarore che tiene nota di quante scritture vengono fatte sull'albero\textit{p}.
     \end{itemize}
 
 \subsection{Descrizione dei metodi implementati}
@@ -285,7 +285,7 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
 
         \item \textbf{get node written()} : restituisce il numero di scritture eseguite sull'albero.
 
-        \item \textbf{search(key)} : in modo ricorsivo visita e quando trova una chiave ==key, ritorna quel nodo e la sua profondità.
+        \item \textbf{search(key)} : in modo ricorsivo visita e quando trova una chiave == key, ritorna quel nodo e la sua profondità.
 
         \item \textbf{split child(x, i)} : divide un nodo figlio troppo grande in due nodi più piccoli durante un'operazione di inserimento. 
         
@@ -298,15 +298,15 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
     \item \textbf{Generazione dei grafici}
     \begin{itemize}
     
-        \item \textbf{crandom_array(n)} : restituisce un'array ordinato casualmente con n valori da 1 a n.
+        \item \textbf{random array(n)} : restituisce un'array ordinato casualmente con n valori da 1 a n.
         
         \item \textbf{test insert(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{insert} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura. 
         
         \item \textbf{test search(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{search} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura.
         
-        \item \textbf{draw table(data, title, colorHead="orange", colorCell="yellow", filename = "table")} : genera una tabella con la tupla data, e come stile della tabella prende i parametri in ingresso, e salva il tutto in memoria con il nome filename.
+        \item \textbf{draw table(data, title, colorHead="orange", colorCell="yellow", filename="table")} : genera una tabella con la tupla data, e come stile della tabella prende i parametri in ingresso, e salva il tutto in memoria con il nome filename.
         
-        \item \textbf{draw_side_graphs(left_data, right_data, plot_title, filename)} : genera due grafici l'uno accanto all'altro, e salva il tutto in memoria con il nome filename.
+        \item \textbf{draw side graphs(left data, right data, plot title, filename)} : genera due grafici l'uno accanto all'altro, e salva il tutto in memoria con il nome filename.
         
         \item \textbf{draw comparison graphs(data1, data2, title, filename)} : genera grafico con entrambi i data nello stesso subplot, e salva il tutto in memoria con il nome filename.
         
@@ -315,7 +315,7 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
 \end{itemize}
 
 \newpage
-\section{Descrizione degli esperimenti condotti e analisi dei risultati sperimentali - Esercizio A}
+\section{Descrizione degli esperimenti condotti e analisi dei risultati sperimentali - Esercizio 1}
 
 \subsection{Dati utilizzati}
 \label{sec:DatiUtilizzati_1}
@@ -425,14 +425,14 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/insert-ms-t100.png}
-    \caption{Grafico dell'Inserimento con t=100}
+    \caption{Grafico dell'Inserimento con $t=100$}
         \label{fig:sidegraphinserttimet100}
 \end{figure}
     
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/search-ms-t100.png}
-    \caption{Grafico della Ricerca con t=100}    \label{fig:sidegraphsearchtimet100}
+    \caption{Grafico della Ricerca con $t=100$}    \label{fig:sidegraphsearchtimet100}
 \end{figure}
 
 \begin{figure}[H]
@@ -450,7 +450,7 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:compgraphsearchtimet100}
     \end{subfigure}
-    \caption{Grafici di confronto con t=100}
+    \caption{Grafici di confronto con $t=100$}
     \label{fig:compgraphtimest100}
 \end{figure}
 
@@ -507,7 +507,7 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
     \label{fig:compgraphtimest250}
 \end{figure}
 
-\subsubsection{Alberi a confronto con t = 1000}
+\subsubsection{Alberi a confronto con $t = 1000$}
 
 \begin{figure}[H]
     \centering
@@ -564,7 +564,7 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
 \newpage
 \textbf{Guardo il numero di letture e scritture:}
 
-\subsubsection{alberi a confronto con $t = 100$}
+\subsubsection{Alberi a confronto con $t = 100$}
 
 \begin{figure}[H]
     \centering
@@ -672,7 +672,7 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
     \label{fig:compgraphtimest250}
 \end{figure}
 
-\subsubsection{Alberi a confronto con $t = 1009$}
+\subsubsection{Alberi a confronto con $t = 1000$}
 
 \begin{figure}[H]
     \centering
