@@ -244,7 +244,7 @@ def test_insert(BinaryTree, BTree, array):
     return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 
 
-def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "table"):
+def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="table"):
     # Crea un nuovo grafico
     figSizeX = 8
     figSizeY = nTests / 3 + 1
@@ -257,7 +257,7 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "
         headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
     elif len(data) == 5:
         data = np.column_stack((data[0], data[1], data[2], data[3], data[4]))
-        headers = ("N° elementi", "Lettura ABR", "Lettura BA", "Scrittura ABR", "Scrittura BA")
+        headers = ("N° elementi", "Letture ABR", "Letture BA", "Scritture ABR", "Scritture BA")
     else:
         data = np.stack(tuple(data), axis=len(data))
         headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
@@ -289,6 +289,8 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename = "
     # Salvataggio del grafico
     fig.savefig(f"plots/tables/{filename}.png", bbox_inches='tight')
 
+    plt.close()
+
 
 def draw_side_graphs(left_data, right_data, plot_title, filename):
     fig, (left, right) = plt.subplots(1, 2, figsize=(15, 5))
@@ -313,6 +315,8 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     # salvataggio del grafico
     fig.savefig(f"./plots/side-graphs/{filename}.png", bbox_inches='tight')
 
+    plt.close()
+
 
 def draw_comparison_graphs(data1, data2, title, filename):
     fig, plot = plt.subplots(1, 1, figsize=(15, 12))
@@ -327,6 +331,8 @@ def draw_comparison_graphs(data1, data2, title, filename):
 
     # salvataggio del grafico
     fig.savefig(f"./plots/comparison-graphs/{filename}.png", bbox_inches='tight')
+
+    plt.close()
 
 
 if __name__ == '__main__':
@@ -361,7 +367,7 @@ if __name__ == '__main__':
     # Test
     for i in range(len(ts)):
         t = ts[i]
-        print(f"\nTest {i + 1}: t = ", t)
+        print(f"\nTest {i + 1}: t = {t}")
         # Reset delle liste tempi per un certo t
 
         BinaryTrees, BTrees = [], []
@@ -398,7 +404,7 @@ if __name__ == '__main__':
             writtenSearchBin.append(wSearchBin)
             writtenSearchBT.append(wSearchBT)
 
-        # end ciclo su t in ts
+        # end ciclo for
 
         # Creazione dei dati per le tabelle
         InsertTimesData.append([
@@ -437,21 +443,32 @@ if __name__ == '__main__':
         filename2 = f"{opname2}-ms-t{t}"
         filename3 = f"{opname1}-wr-t{t}"
         filename4 = f"{opname2}-wr-t{t}"
+        filename5 = f"{opname1}-r-t{t}"
+        filename6 = f"{opname2}-r-t{t}"
+        filename7 = f"{opname1}-w-t{t}"
+        filename8 = f"{opname2}-w-t{t}"
 
         # Creazione delle tabelle
+        print(f"\nCreazione delle tabelle per t = {t} e salvo nella cartella {directory[1]}")
         draw_table(InsertTimesData[i], InsertTimesTitle[i], "green", "lightgreen", filename1)
         draw_table(SearchTimesData[i], InsertTimesTitle[i], "purple", "pink", filename2)
         draw_table(InsertWRData[i], InsertWRTitle[i], "green", "lightgreen", filename3)
         draw_table(SearchWRData[i], SearchWRTitle[i], "purple", "pink", filename4)
 
         # Creazione dei grafici
+        print(f"Creazione dei grafici per t = {t} e salvo nella cartella {directory[2]}")
         draw_side_graphs(timesInsertBin, timesInsertBT, "Inserimento", filename1)
         draw_side_graphs(timesSearchBin, timesSearchBT, "Ricerca", filename2)
-        draw_side_graphs(readInsertBin, readInsertBT, "Inserimento: letture", filename3)
-        draw_side_graphs(readSearchBin, readSearchBT, "Ricerca: letture", filename4)
+        draw_side_graphs(readInsertBin, readInsertBT, "Inserimento: letture", filename5)
+        draw_side_graphs(readSearchBin, readSearchBT, "Ricerca: letture", filename6)
+        draw_side_graphs(writtenInsertBin, writtenInsertBT, "Inserimento: scritture", filename7)
+        draw_side_graphs(writtenSearchBin, writtenSearchBT, "Ricerca: scritture", filename8)
 
         # Confronto dei grafici
+        print(f"Confronto dei grafici per t = {t} e salvo nella cartella {directory[3]}\n")
         draw_comparison_graphs(timesInsertBin, timesInsertBT, "Confronto inserimento", filename1)
         draw_comparison_graphs(timesSearchBin, timesSearchBT, "Confronto ricerca", filename2)
-        draw_comparison_graphs(readInsertBin, readInsertBT, "Confronto inserimento: letture", filename3)
-        draw_comparison_graphs(readSearchBin, readSearchBT, "Confronto ricerca: letture", filename4)
+        draw_comparison_graphs(readInsertBin, readInsertBT, "Confronto inserimento: letture", filename5)
+        draw_comparison_graphs(readSearchBin, readSearchBT, "Confronto ricerca: letture", filename6)
+        draw_comparison_graphs(writtenInsertBin, writtenInsertBT, "Confronto inserimento: scritture", filename7)
+        draw_comparison_graphs(writtenSearchBin, writtenSearchBT, "Confronto ricerca: scritture", filename8)
