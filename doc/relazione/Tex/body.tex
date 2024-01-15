@@ -399,9 +399,9 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
 \subsection{Risultati sperimentali e commenti analitici}
 \label{sec:RisultatiSperimentaliCommentiAnalitici_1}
 
-\textbf{Guardo i tempi di esecuzione:}
+Guardo prima i tempi di esecuzione:
 
-\subsubsection{Alberi a confronto con $t = 100$}
+\subsubsection{Alberi a confronto nei tempi con $t = 100$}
 
 \begin{figure}[H]
     \centering
@@ -418,21 +418,21 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:tablesearchtimet100}
     \end{subfigure}
-    \caption{Tabella con $t=100$}
+    \caption{Tabella tempi con $t=100$}
     \label{fig:tabletimest100}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/insert-ms-t100.png}
-    \caption{Grafico dell'Inserimento con $t=100$}
+    \caption{Grafico tempi dell'Inserimento con $t=100$}
         \label{fig:sidegraphinserttimet100}
 \end{figure}
     
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/search-ms-t100.png}
-    \caption{Grafico della Ricerca con $t=100$}    \label{fig:sidegraphsearchtimet100}
+    \caption{Grafico tempi della Ricerca con $t=100$}    \label{fig:sidegraphsearchtimet100}
 \end{figure}
 
 \begin{figure}[H]
@@ -450,11 +450,11 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:compgraphsearchtimet100}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=100$}
+    \caption{Grafici di confronto dei tempi con $t=100$}
     \label{fig:compgraphtimest100}
 \end{figure}
 
-\subsubsection{Alberi a confronto con $t=250$}
+\subsubsection{Alberi a confronto nei tempi con $t = 250$}
 
 \begin{figure}[H]
     \centering
@@ -471,21 +471,22 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:tablesearchtimet250}
     \end{subfigure}
-    \caption{Tabella con $t=250$}
+    \caption{Tabella tempi con $t=250$}
     \label{fig:tabletimest250}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/insert-ms-t250.png}
-    \caption{Grafico dell'Inserimento con $t=250$}
-        \label{fig:sidegraphinserttimet250}
+    \caption{Grafico tempi dell'Inserimento con $t=250$}
+    \label{fig:sidegraphinserttimet250}
 \end{figure}
     
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/search-ms-t250.png}
-    \caption{Grafico della Ricerca con $t=250$}    \label{fig:sidegraphsearchtimet250}
+    \caption{Grafico tempi della Ricerca con $t=250$}    
+    \label{fig:sidegraphsearchtimet250}
 \end{figure}
 
 \begin{figure}[H]
@@ -503,11 +504,12 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:compgraphsearchtimet250}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=250$}
+    \caption{Grafici di confronto dei tempi con $t=250$}
     \label{fig:compgraphtimest250}
 \end{figure}
 
-\subsubsection{Alberi a confronto con $t = 1000$}
+
+\subsubsection{Alberi a confronto nei tempi con $t = 1000$}
 
 \begin{figure}[H]
     \centering
@@ -524,21 +526,21 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:tablesearchtimet1000}
     \end{subfigure}
-    \caption{Tabella con $t=1000$}
+    \caption{Tabella tempi con $t=1000$}
     \label{fig:tabletimest1000}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/insert-ms-t1000.png}
-    \caption{Grafico dell'Inserimento con $t=1000$}
+    \caption{Grafico tempi dell'Inserimento con $t=1000$}
     \label{fig:sidegraphinserttimet1000}
 \end{figure}
     
 \begin{figure}[H]
     \centering
     \includegraphics[width=\textwidth]{side-graphs/search-ms-t1000.png}
-    \caption{Grafico della Ricerca con $t=1000$}
+    \caption{Grafico tempi della Ricerca con $t=1000$}    
     \label{fig:sidegraphsearchtimet1000}
 \end{figure}
 
@@ -557,174 +559,278 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
         \caption{Ricerca}
         \label{fig:compgraphsearchtimet1000}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=1000$}
+    \caption{Grafici di confronto dei tempi con $t=1000$}
     \label{fig:compgraphtimest1000}
 \end{figure}
 
-\newpage
-\textbf{Guardo il numero di letture e scritture:}
 
-\subsubsection{Alberi a confronto con $t = 100$}
+\textbf{Ora invece guardo il numero di letture e scritture:}
+
+\subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 100$}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/insert-wr-t100.png}
-        \caption{Inserimento}
-        \label{fig:tableinserttimet100}
+        \caption{Inserimento, letture e scritture}
+        \label{fig:tableinsertwr100}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/search-wr-t100.png}
-        \caption{Ricerca}
-        \label{fig:tablesearchtimet100}
+        \caption{Ricerca, letture e scritture}
+        \label{fig:tablesearchwr100}
     \end{subfigure}
-    \caption{Tabella con $t=100$}
-    \label{fig:tabletimest100}
+    \caption{Tabelle scritture e letture con $t=100$}
+    \label{fig:tablewr100}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/insert-wr-t100.png}
-    \caption{Grafico dell'Inserimento con $t=100$}
-    \label{fig:sidegraphinserttimet100}
+    \includegraphics[width=\textwidth]{side-graphs/insert-r-t100.png}
+    \caption{Grafico delle letture dell'Inserimento con $t=100$}
+    \label{fig:sidegraphinsertread100}
 \end{figure}
     
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/search-wr-t100.png}
-    \caption{Grafico della Ricerca con $t=100$}
-    \label{fig:sidegraphsearchtimet100}
+    \includegraphics[width=\textwidth]{side-graphs/search-r-t100.png}
+    \caption{Grafico delle letture della Ricerca con $t=100$}
+    \label{fig:sidegraphsearchread100}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/insert-w-t100.png}
+    \caption{Grafico delle scritture dell'Inserimento con $t=100$}
+    \label{fig:sidegraphinsertwrite100}
+\end{figure}
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/search-w-t100.png}
+    \caption{Grafico delle scritture della Ricerca con $t=100$}
+    \label{fig:sidegraphsearchwrite100}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/insert-wr-t100.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-r-t100.png}
         \caption{Inserimento}
-        \label{fig:compgraphinserttimet100}
+        \label{fig:compgraphinsertread100}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/search-wr-t100.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/search-r-t100.png}
         \caption{Ricerca}
-        \label{fig:compgraphsearchtimet100}
+        \label{fig:compgraphsearchread100}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=100$}
-    \label{fig:compgraphtimest100}
+    \caption{Grafici di confronto delle letture con $t=100$}
+    \label{fig:compgraphread100}
 \end{figure}
 
-\subsubsection{Alberi a confronto con $t = 250$}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-w-t100.png}
+        \caption{Inserimento}
+        \label{fig:compgraphinsertwrite100}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/search-w-t100.png}
+        \caption{Ricerca}
+        \label{fig:compgraphsearchwrite100}
+    \end{subfigure}
+    \caption{Grafici di confronto delle scritture con $t=100$}
+    \label{fig:compgraphread100}
+\end{figure}
+
+
+
+\subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 250$}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/insert-wr-t250.png}
-        \caption{Inserimento}
-        \label{fig:tableinserttimet250}
+        \caption{Inserimento, letture e scritture}
+        \label{fig:tableinsertwr250}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/search-wr-t250.png}
-        \caption{Ricerca}
-        \label{fig:tablesearchtimet250}
+        \caption{Ricerca, letture e scritture}
+        \label{fig:tablesearchwr250}
     \end{subfigure}
-    \caption{Tabella con $t=250$}
-    \label{fig:tabletimest250}
+    \caption{Tabelle scritture e letture con $t=250$}
+    \label{fig:tablewr250}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/insert-wr-t250.png}
-    \caption{Grafico dell'Inserimento con $t=250$}
-    \label{fig:sidegraphinserttimet250}
+    \includegraphics[width=\textwidth]{side-graphs/insert-r-t250.png}
+    \caption{Grafico delle letture dell'Inserimento con $t=250$}
+    \label{fig:sidegraphinsertread250}
 \end{figure}
     
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/search-wr-t250.png}
-    \caption{Grafico della Ricerca con $t=250$}
-    \label{fig:sidegraphsearchtimet250}
+    \includegraphics[width=\textwidth]{side-graphs/search-r-t250.png}
+    \caption{Grafico delle letture della Ricerca con $t=250$}
+    \label{fig:sidegraphsearchread250}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/insert-w-t250.png}
+    \caption{Grafico delle scritture dell'Inserimento con $t=250$}
+    \label{fig:sidegraphinsertwrite250}
+\end{figure}
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/search-w-t250.png}
+    \caption{Grafico delle scritture della Ricerca con $t=250$}
+    \label{fig:sidegraphsearchwrite250}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/insert-wr-t250.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-r-t250.png}
         \caption{Inserimento}
-        \label{fig:compgraphinserttimet250}
+        \label{fig:compgraphinsertread250}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/search-wr-t250.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/search-r-t250.png}
         \caption{Ricerca}
-        \label{fig:compgraphsearchtimet250}
+        \label{fig:compgraphsearchread250}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=250$}
-    \label{fig:compgraphtimest250}
+    \caption{Grafici di confronto delle letture con $t=250$}
+    \label{fig:compgraphread250}
 \end{figure}
 
-\subsubsection{Alberi a confronto con $t = 1000$}
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-w-t250.png}
+        \caption{Inserimento}
+        \label{fig:compgraphinsertwrite250}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/search-w-t250.png}
+        \caption{Ricerca}
+        \label{fig:compgraphsearchwrite250}
+    \end{subfigure}
+    \caption{Grafici di confronto delle scritture con $t=250$}
+    \label{fig:compgraphread250}
+\end{figure}
+
+
+\subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 1000$}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/insert-wr-t1000.png}
-        \caption{Inserimento}
-        \label{fig:tableinserttimet1000}
+        \caption{Inserimento, letture e scritture}
+        \label{fig:tableinsertwr1000}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
         \includegraphics[width=\textwidth]{tables/search-wr-t1000.png}
-        \caption{Ricerca}
-        \label{fig:tablesearchtimet1000}
+        \caption{Ricerca, letture e scritture}
+        \label{fig:tablesearchwr1000}
     \end{subfigure}
-    \caption{Tabella con $t=1000$}
-    \label{fig:tabletimest1000}
+    \caption{Tabelle scritture e letture con $t=1000$}
+    \label{fig:tablewr1000}
 \end{figure}
 
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/insert-wr-t1000.png}
-    \caption{Grafico dell'Inserimento con $t=1000$}
-    \label{fig:sidegraphinserttimet1000}
+    \includegraphics[width=\textwidth]{side-graphs/insert-r-t1000.png}
+    \caption{Grafico delle letture dell'Inserimento con $t=1000$}
+    \label{fig:sidegraphinsertread1000}
 \end{figure}
     
 \begin{figure}[H]
     \centering
-    \includegraphics[width=\textwidth]{side-graphs/search-wr-t1000.png}
-    \caption{Grafico della Ricerca con $t=1000$}
-    \label{fig:sidegraphsearchtimet1000}
+    \includegraphics[width=\textwidth]{side-graphs/search-r-t1000.png}
+    \caption{Grafico delle letture della Ricerca con $t=1000$}
+    \label{fig:sidegraphsearchread1000}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/insert-w-t1000.png}
+    \caption{Grafico delle scritture dell'Inserimento con $t=1000$}
+    \label{fig:sidegraphinsertwrite1000}
+\end{figure}
+    
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\textwidth]{side-graphs/search-w-t1000.png}
+    \caption{Grafico delle scritture della Ricerca con $t=1000$}
+    \label{fig:sidegraphsearchwrite1000}
 \end{figure}
 
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/insert-wr-t1000.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-r-t1000.png}
         \caption{Inserimento}
-        \label{fig:compgraphinserttimet1000}
+        \label{fig:compgraphinsertread1000}
     \end{subfigure}
     \hfill
     \begin{subfigure}[b]{0.49\textwidth}
         \centering
-        \includegraphics[width=\textwidth]{comparison-graphs/search-wr-t1000.png}
+        \includegraphics[width=\textwidth]{comparison-graphs/search-r-t1000.png}
         \caption{Ricerca}
-        \label{fig:compgraphsearchtimet1000}
+        \label{fig:compgraphsearchread1000}
     \end{subfigure}
-    \caption{Grafici di confronto con $t=1000$}
-    \label{fig:compgraphtimest1000}
+    \caption{Grafici di confronto delle letture con $t=1000$}
+    \label{fig:compgraphread1000}
 \end{figure}
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/insert-w-t1000.png}
+        \caption{Inserimento}
+        \label{fig:compgraphinsertwrite1000}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{comparison-graphs/search-w-t1000.png}
+        \caption{Ricerca}
+        \label{fig:compgraphsearchwrite1000}
+    \end{subfigure}
+    \caption{Grafici di confronto delle scritture con $t=1000$}
+    \label{fig:compgraphread1000}
+\end{figure}
+
+
 
 \subsection{Tesi e sintesi finale}
 \label{TesiSintesiFinale_1}
