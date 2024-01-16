@@ -186,7 +186,7 @@ In un ABR le operazioni di base richiedono un tempo proporzionale all'altezza de
     \label{fig:ComplessitàABR}
 \end{figure}
 
-Per un B-albero, le operazioni di base richiedono un tempo proporzionale all'altezza dell'albero. La struttura di un B-albero permette di mantenere un bilanciamento dell'altezza e di ridurre la complessità delle operazioni rispetto a un albero binario di ricerca. Le operazioni di base su un B-albero richiedono in media \(\Theta(\log n)\), dove \(logn=h\) è l'altezza dell'albero e \(n\) è il numero di chiavi nell'albero. Qui di seguito sono presentate le complessità degli algoritmi più importanti di un B-albero, sia nel caso peggiore che nel caso medio.
+Per un B-albero, le operazioni di base richiedono un tempo proporzionale all'altezza dell'albero. La struttura di un B-albero permette di mantenere un bilanciamento dell'altezza e di ridurre la complessità delle operazioni rispetto a un albero binario di ricerca. Le operazioni di base su un B-albero richiedono in media \(\Theta(\log_t n)\), dove \(log_tn=h\) è l'altezza dell'albero e \(n\) è il numero di chiavi nell'albero. Qui di seguito sono presentate le complessità degli algoritmi più importanti di un B-albero, sia nel caso peggiore che nel caso medio.
 
 \begin{figure}[H]
     \centering
@@ -239,8 +239,8 @@ Con la seguente descrizione elencheremo i vari attributi delle classi che permet
     \begin{itemize}
         \item \textbf{node} : contiene nodo.
         \item \textbf{root} : è un puntatore alla radice.
-        \item \textbf{node read} : contarore che tiene nota di quante letture vengono fatte sull'albero.
-        \item \textbf{node written} : contarore che tiene nota di quante scritture vengono fatte sull'albero.
+        \item \textbf{node\textunderscore read} : contarore che tiene nota di quante letture vengono fatte sull'albero.
+        \item \textbf{node\textunderscore written} : contarore che tiene nota di quante scritture vengono fatte sull'albero.
     \end{itemize}
 
 \item \textbf{BTreeNode}
@@ -255,8 +255,8 @@ Con la seguente descrizione elencheremo i vari attributi delle classi che permet
     \begin{itemize}
         \item \textbf{root} : è un puntatore alla radice\textit{p}.
         \item \textbf{t} : numero minimo chiavi memorizzate in ogni nodo \textit{p}.
-        \item \textbf{node read} : contarore che tiene nota di quante letture vengono fatte sull'albero \textit{p}.
-        \item \textbf{node written} : contarore che tiene nota di quante scritture vengono fatte sull'albero\textit{p}.
+        \item \textbf{node\textunderscore read} : contarore che tiene nota di quante letture vengono fatte sull'albero \textit{p}.
+        \item \textbf{node\textunderscore written} : contarore che tiene nota di quante scritture vengono fatte sull'albero\textit{p}.
     \end{itemize}
 
 \subsection{Descrizione dei metodi implementati}
@@ -268,9 +268,9 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
     \item \textbf{BinaryTree}
     \begin{itemize}
 
-        \item \textbf{get node read()} : restituisce il numero di letture eseguite sull'albero.
+        \item \textbf{get\textunderscore node\textunderscore read()} : restituisce il numero di letture eseguite sull'albero.
 
-        \item \textbf{get node written()} : restituisce il numero di scritture eseguite sull'albero.
+        \item \textbf{get\textunderscore node\textunderscore written()} : restituisce il numero di scritture eseguite sull'albero.
 
         \item \textbf{search(x, key)} : in modo ricorsivo visita e quando trova una chiave ==key, ritorna quel nodo.
         
@@ -281,34 +281,34 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
     \item \textbf{BinaryTree}
     \begin{itemize}
 
-        \item \textbf{get node read()} : restituisce il numero di letture eseguite sull'albero.
+        \item \textbf{get\textunderscore node\textunderscore read()} : restituisce il numero di letture eseguite sull'albero.
 
-        \item \textbf{get node written()} : restituisce il numero di scritture eseguite sull'albero.
+        \item \textbf{get\textunderscore node\textunderscore written()} : restituisce il numero di scritture eseguite sull'albero.
 
         \item \textbf{search(key)} : in modo ricorsivo visita e quando trova una chiave == key, ritorna quel nodo e la sua profondità.
 
-        \item \textbf{split child(x, i)} : divide un nodo figlio troppo grande in due nodi più piccoli durante un'operazione di inserimento. 
+        \item \textbf{split\textunderscore child(x, i)} : divide un nodo figlio troppo grande in due nodi più piccoli durante un'operazione di inserimento. 
         
         \item \textbf{insert(key)} : inserisce la  chiave e usando \textbf{split child(x, i)} e \textbf{insert nonfull(key)} mantiene l'albero bilanciato.
         
-        \item \textbf{insert nonfull(key)} : viene chiamata quando si inserisce una chiave in un nodo non completamente pieno.
+        \item \textbf{insert\textunderscore nonfull(key)} : viene chiamata quando si inserisce una chiave in un nodo non completamente pieno.
         
     \end{itemize}
     
     \item \textbf{Generazione dei grafici}
     \begin{itemize}
     
-        \item \textbf{random array(n)} : restituisce un'array ordinato casualmente con n valori da 1 a n.
+        \item \textbf{random\textunderscore array(n)} : restituisce un'array ordinato casualmente con n valori da 1 a n.
         
-        \item \textbf{test insert(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{insert} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura. 
+        \item \textbf{test\textunderscore insert(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{insert} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura. 
         
-        \item \textbf{test search(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{search} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura.
+        \item \textbf{test\textunderscore search(BinaryTree, BTree, array)} : restituisce più valori contenenti i tempi di esecuzione in serie del metodo \textbf{search} per ABR e BA, e delle rispettive occorrenze di lettura e scrittura.
         
-        \item \textbf{draw table(data, title, colorHead="orange", colorCell="yellow", filename="table")} : genera una tabella con la tupla data, e come stile della tabella prende i parametri in ingresso, e salva il tutto in memoria con il nome filename.
+        \item \textbf{draw\textunderscore table(data, title, colorHead="orange", colorCell="yellow", filename="table")} : genera una tabella con la tupla data, e come stile della tabella prende i parametri in ingresso, e salva il tutto in memoria con il nome filename.
         
-        \item \textbf{draw side graphs(left data, right data, plot title, filename)} : genera due grafici l'uno accanto all'altro, e salva il tutto in memoria con il nome filename.
+        \item \textbf{draw\textunderscore side\textunderscore graphs(left data, right data, plot title, filename)} : genera due grafici l'uno accanto all'altro, e salva il tutto in memoria con il nome filename.
         
-        \item \textbf{draw comparison graphs(data1, data2, title, filename)} : genera grafico con entrambi i data nello stesso subplot, e salva il tutto in memoria con il nome filename.
+        \item \textbf{draw\textunderscore comparison\textunderscore graphs(data1, data2, title, filename)} : genera grafico con entrambi i data nello stesso subplot, e salva il tutto in memoria con il nome filename.
         
     \end{itemize}
     
@@ -322,19 +322,19 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
 L'esperimento che ho svolto si divide prima di tutto per il numero di nodi che sono andato ad inserire nei due alberi. Quindi divideremo l'esperimento in 4 parti:
 
 \begin{itemize}
-    \item alberi con t=\textbf{100}
-    \item alberi con t=\textbf{250}
-    \item alberi con t=\textbf{1000}
+    \item Alberi con $t=\textbf{100}$
+    \item Alberi con $t=\textbf{250}$
+    \item Alberi con $t=\textbf{1000}$
 \end{itemize}
 
 Prendendo il caso della randomizzazione ho deciso di fare un test per verificare se il range in cui prendo i numeri influenzi il tempo che ci mette per lo svolgimento dell'algoritmo. Questo caso è stato testato con gli alberi da 1000 elementi per avere una miglior idea delle tempistiche. I range di valori che ho usato sono i seguenti:
 
 \textbf{50-1000, con uno step di 50}
-Quindi ho creato 20 array su cui testare il tutto, al variare della t
+Quindi ho creato 20 array su cui testare il tutto, al variare della $\textbf{t}$
 
 \subsection{Misurazioni}
 \label{sec:Misurazioni_1}
-I metodi di calcolo dei tempi nei metodi \textbf{test insert} e \textbf{test search} sono di due tipi. Innanzitutto dobbiamo prendere il tempo prima dell'esecuzione del metodo e quello dopo la sua esecuzione: 
+I metodi di calcolo dei tempi nei metodi \textbf{test\textunderscore insert} e \textbf{test\textunderscore search} sono di due tipi. Innanzitutto dobbiamo prendere il tempo prima dell'esecuzione del metodo e quello dopo la sua esecuzione:
 
 \begin{verbatim}
 def test_search(BinaryTree, BTree, array):
