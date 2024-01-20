@@ -192,14 +192,15 @@ def test_search(BinaryTree, BTree, array):
 
     timesBin = 0
     timesBT = 0
-    for i in range(len(array)):
+
+    for k in range(len(array)):
         start = timer()
-        BinaryTree.search(BinaryTree.root, array[i])
+        BinaryTree.search(BinaryTree.root, array[k])
         end = timer()
         timesBin += (end - start) * 1000
 
         start = timer()
-        BTree.search(array[i])
+        BTree.search(array[k])
         end = timer()
         timesBT += (end - start) * 1000
 
@@ -220,16 +221,18 @@ def test_insert(BinaryTree, BTree, array):
     print(f"\nInserimento di {len(array)} elementi:")
     timesBin = 0
     timesBT = 0
-    for i in range(len(array)):
+
+    for k in range(len(array)):
         start = timer()
-        BinaryTree.insert(BinaryTreeNode(array[i]))
+        BinaryTree.insert(BinaryTreeNode(array[k]))
         end = timer()
         timesBin += (end - start) * 1000
 
         start = timer()
-        BTree.insert(array[i])
+        BTree.insert(array[k])
         end = timer()
         timesBT += (end - start) * 1000
+
 
     readBin = BinaryTree.get_node_read()
     writtenBin = BinaryTree.get_node_written()
@@ -251,21 +254,20 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="ta
     fig, ax = plt.subplots(figsize=(figSizeX, figSizeY))
     plt.title(title)
 
+    data_columns = np.stack(tuple(data), axis=1)
+
     # Unisci le liste di dati come colonne al fine di creare un array bidimensionale di dati: 'data'
-    if len(data) == 3:
-        data = np.column_stack((data[0], data[1], data[2]))
-        headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
-    elif len(data) == 5:
-        data = np.column_stack((data[0], data[1], data[2], data[3], data[4]))
-        headers = ("N° elementi", "Letture ABR", "Letture BA", "Scritture ABR", "Scritture BA")
+    if filename.__contains__("ms"):
+        #data = np.column_stack((data[0], data[1], data[2]), 1)
+        headers = ("N° elementi", "Tempi ABR", "Tempi BA")
     else:
-        data = np.stack(tuple(data), axis=len(data))
-        headers = ("N° elementi", "Albero Binario di Ricerca", "B-Albero")
+        #data = np.column_stack((data[0], data[1], data[2], data[3], data[4]), 1)
+        headers = ("N° elementi", "Letture ABR", "Letture BA", "Scritture ABR", "Scritture BA")
 
     # Stile tabella
     ax.axis('off')
-    table = ax.table(cellText=data, colLabels=headers, loc="center", cellLoc="center")
-    table.auto_set_column_width(col=list(range(len(data))))
+    table = ax.table(cellText=data_columns, colLabels=headers, loc="center", cellLoc="center")
+    table.auto_set_column_width(col=list(range(len(data_columns))))
     table.scale(1, 1.5)
 
     # Colorazione delle celle
@@ -284,7 +286,27 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="ta
         # imposta le proprietà del testo della cella
         table[cell].set_text_props(**text_props)
 
-    #plt.show()
+
+
+    """
+    fig, ax = plt.subplots(figsize=(9, 18))
+
+    data = np.stack(tuple(columns), axis=1)
+
+    ax.axis('off')
+    table = ax.table(cellText=data, colLabels=headers, loc='center', cellLoc='center')
+    table.auto_set_column_width(col=list(range(len(columns))))
+    table.scale(1, 1.5)
+
+    for cell in table._cells:
+        if table[cell].get_text().get_text() in headers:
+            table[cell].set_facecolor("#c1d6ff")
+            table[cell].set_text_props(weight='bold')
+        elif cell[0] % 2 == 0:
+            table[cell].set_facecolor("#deebff")
+    """
+
+    plt.show()
 
     # Salvataggio del grafico
     fig.savefig(f"plots/tables/{filename}.png", bbox_inches='tight')
@@ -336,19 +358,33 @@ def draw_comparison_graphs(data1, data2, title, filename):
 
 
 if __name__ == '__main__':
+    #step * nTests == 1000
 
-    step, nTests = 50, 20
+    #step, nTests = 5, 50
+
+    step, nTests = 5, 200
 
     #step, nTests = 10, 100
-    #step, nTests = 200, 50
-    #step, nTests = 500, 20
+
+    #step, nTests = 20, 50
+    #step, nTests = 25, 40
+
+    #step, nTests = 50, 20
+
+    #step, nTests = 100, 10
+
+    n_average = 10
 
     ts = [100, 250, 1000]
 
+
     # Creazione degli array randomici
     arrays = []
+    for _ in range(n_average):
+        arrays.append([])
     for n in range(step, step * (nTests + 1), step):
-        arrays.append(random_array(n))
+        for l in range(n_average):
+            arrays[l].append(random_array(n))
 
     opname1, opname2 = "insert", "search"
 
@@ -365,50 +401,76 @@ if __name__ == '__main__':
             os.makedirs(dir)
 
     # Test
-    for i in range(len(ts)):
-        t = ts[i]
-        print(f"\nTest {i + 1}: t = {t}")
-        # Reset delle liste tempi per un certo t
-
-        BinaryTrees, BTrees = [], []
+    for t in ts:
+        print(f"\nTest con t = {t}")
+        # Reset delle liste per un certo t
         InsertTimesTitle, SearchTimesTitle = [], []
         InsertWRTitle, SearchWRTitle = [], []
-        InsertTimesData, SearchTimesData = [], []
-        InsertWRData, SearchWRData = [], []
+        InsertTimesData, SearchTimesData = [[[]]], [[[]]]
+        InsertWRData, SearchWRData = [[[]]], [[[]]]
+
         timesInsertBin, timesInsertBT = [], []
         timesSearchBin, timesSearchBT = [], []
         readInsertBin, readInsertBT, writtenInsertBin, writtenInsertBT = [], [], [], []
         readSearchBin, readSearchBT, writtenSearchBin, writtenSearchBT = [], [], [], []
-        j = -1
-        for a in arrays:
-            j += 1
-            # Inizializzazione alberi
-            BinaryTrees.append(BinaryTree())
-            BTrees.append(BTree(t))
 
-            # Test inserimento
-            tInsertBin, tInsertBT, rInsertBin, rInsertBT, wInsertBin, wInsertBT = test_insert(BinaryTrees[j], BTrees[j], a)
-            timesInsertBin.append(tInsertBin)
-            timesInsertBT.append(tInsertBT)
-            readInsertBin.append(rInsertBin)
-            readInsertBT.append(rInsertBT)
-            writtenInsertBin.append(wInsertBin)
-            writtenInsertBT.append(wInsertBT)
+        for i in range(nTests):
+            # Reset delle liste tempi per una certa dimensione array n
+            BTrees, BinaryTrees = [], []
+            tInsertBin, tInsertBT = 0, 0
+            rInsertBin, rInsertBT = 0, 0
+            wInsertBin, wInsertBT = 0, 0
 
-            # Test ricerca
-            tSearchBin, tSearchBT, rSearchBin, rSearchBT, wSearchBin, wSearchBT = test_search(BinaryTrees[j], BTrees[j], a)
-            timesSearchBin.append(tSearchBin)
-            timesSearchBT.append(tSearchBT)
-            readSearchBin.append(rSearchBin)
-            readSearchBT.append(rSearchBT)
-            writtenSearchBin.append(wSearchBin)
-            writtenSearchBT.append(wSearchBT)
+            tSearchBin, tSearchBT = 0, 0
+            rSearchBin, rSearchBT = 0, 0
+            wSearchBin, wSearchBT = 0, 0
+
+            for j in range(n_average):
+                # Inizializzazione alberi
+                BinaryTrees.append(BinaryTree())
+                BTrees.append(BTree(t))
+
+                print(f"\nArray {i + 1}; n = {step * (i + 1)} test = {j + 1}")
+
+                # Test inserimento
+                i1, i2, i3, i4, i5, i6 = test_insert(BinaryTrees[j], BTrees[j], arrays[j][i])
+                tInsertBin += i1
+                tInsertBT += i2
+                rInsertBin += i3
+                rInsertBT += i4
+                wInsertBin += i5
+                wInsertBT += i6
+
+                # Test ricerca
+                s1, s2, s3, s4, s5, s6 = test_search(BinaryTrees[j], BTrees[j], arrays[j][i])
+                tSearchBin += s1
+                tSearchBT += s2
+                rSearchBin += s3
+                rSearchBT += s4
+                wSearchBin += s5
+                wSearchBT += s6
+
+            # Media inserimento
+            timesInsertBin.append(tInsertBin / n_average)
+            timesInsertBT.append(tInsertBT / n_average)
+            readInsertBin.append(rInsertBin / n_average)
+            readInsertBT.append(rInsertBT / n_average)
+            writtenInsertBin.append(wInsertBin / n_average)
+            writtenInsertBT.append(wInsertBT / n_average)
+
+            # Media ricerca
+            timesSearchBin.append(tSearchBin / n_average)
+            timesSearchBT.append(tSearchBT / n_average)
+            readSearchBin.append(rSearchBin / n_average)
+            readSearchBT.append(rSearchBT / n_average)
+            writtenSearchBin.append(wSearchBin / n_average)
+            writtenSearchBT.append(wSearchBT / n_average)
 
         # end ciclo for
 
         # Creazione dei dati per le tabelle
         InsertTimesData.append([
-            [n for n in range(step, step * (nTests + 1), step)],
+            [n for n in range(step, step * (nTests+1), step)],
             ["{:.3e}".format(val) for val in timesInsertBin],
             ["{:.3e}".format(val) for val in timesInsertBT]
         ])
@@ -448,12 +510,15 @@ if __name__ == '__main__':
         filename7 = f"{opname1}-w-t{t}"
         filename8 = f"{opname2}-w-t{t}"
 
+        """
         # Creazione delle tabelle
         print(f"\nCreazione delle tabelle per t = {t} e salvo nella cartella {directory[1]}")
-        draw_table(InsertTimesData[i], InsertTimesTitle[i], "green", "lightgreen", filename1)
-        draw_table(SearchTimesData[i], InsertTimesTitle[i], "purple", "pink", filename2)
-        draw_table(InsertWRData[i], InsertWRTitle[i], "green", "lightgreen", filename3)
-        draw_table(SearchWRData[i], SearchWRTitle[i], "purple", "pink", filename4)
+        index = ts.index(t)
+        draw_table(InsertTimesData[index], InsertTimesTitle[index], "green", "lightgreen", filename1)
+        draw_table(SearchTimesData[index], InsertTimesTitle[index], "purple", "pink", filename2)
+        draw_table(InsertWRData[index], InsertWRTitle[index], "green", "lightgreen", filename3)
+        draw_table(SearchWRData[index], SearchWRTitle[index], "purple", "pink", filename4)
+        """
 
         # Creazione dei grafici
         print(f"Creazione dei grafici per t = {t} e salvo nella cartella {directory[2]}")
