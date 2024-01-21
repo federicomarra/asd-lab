@@ -360,6 +360,7 @@ if __name__ == '__main__':
 
     step = 1000 // n_tests
     n_average = 10
+    #n_average = 20   #28 minuti e 52 secondi con n_tests=200
     ts = [100, 250, 1000]
     directory = [f"plots/nTests-{n_tests}", f"plots/nTests-{n_tests}/tables", f"plots/nTests-{n_tests}/side-graphs", f"plots/nTests-{n_tests}/comparison-graphs"]
 
@@ -532,9 +533,9 @@ if __name__ == '__main__':
 
     END_EXECUTION_TIME = timer()
     EXECUTION_TIME = END_EXECUTION_TIME - START_EXECUTION_TIME
-    seconds = EXECUTION_TIME % 60 // 1
+    seconds = EXECUTION_TIME % 60
     minutes = EXECUTION_TIME // 60
     if EXECUTION_TIME < 60:
-        print(f"\nTempo totale di esecuzione: {seconds} secondi")
+        print(f"\nTempo totale di esecuzione: {int(seconds)} secondi")
     else:
-        print(f"\nTempo totale di esecuzione: {minutes} minuti e {seconds} secondi")
+        print(f"\nTempo totale di esecuzione: {int(minutes)} minuti e {int(seconds)} secondi")
