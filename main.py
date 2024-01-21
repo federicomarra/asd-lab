@@ -118,11 +118,12 @@ class BTree:
         while i < len(self.root.keys) and key > self.root.keys[i]:
             i += 1
         if i < len(self.root.keys) and key == self.root.keys[i]:
+            self.node_read += 1
             return self.root, i
         elif self.root.leaf:
             return None, 0  # key not found
         else:
-            self.node_read += 1
+            self.root.child[i].node_read += 1
             return self.root.child[i].search(key)
 
     def split_child(self, x, i):
@@ -143,9 +144,12 @@ class BTree:
             x.keys[j + 1] = x.keys[j]
         x.keys[i] = y.keys[self.t - 1]
         x.n = x.n + 1
+        """
         y.node_written += 1
         z.node_written += 1
         x.node_written += 1
+        """
+        self.node_written += 3
 
     # Funzione per inserire una chiave in un albero
     def insert(self, key):
@@ -160,6 +164,7 @@ class BTree:
             self.insert_nonfull(s, key)
         else:
             self.insert_nonfull(r, key)
+        self.node_written += 1
 
     # Funzione per inserire una chiave in un nodo non pieno
     def insert_nonfull(self, x, k):
@@ -171,10 +176,12 @@ class BTree:
                 x.keys[i + 1] = x.keys[i]
                 i -= 1
             x.keys[i + 1] = k
+            self.node_written += 1
         else:
             while i >= 0 and k < x.keys[i]:
                 i -= 1
             i += 1
+            self.node_read += 1
             if len(x.child[i].keys) == (2 * self.t) - 1:
                 self.split_child(x, i)
                 if k > x.keys[i]:
@@ -219,6 +226,7 @@ def test_search(BinaryTree, BTree, array):
 
 def test_insert(BinaryTree, BTree, array):
     print(f"\nInserimento di {len(array)} elementi:")
+
     timesBin = 0
     timesBT = 0
 
@@ -233,7 +241,6 @@ def test_insert(BinaryTree, BTree, array):
         end = timer()
         timesBT += (end - start) * 1000
 
-
     readBin = BinaryTree.get_node_read()
     writtenBin = BinaryTree.get_node_written()
     readBT = BTree.get_node_read()
@@ -247,22 +254,23 @@ def test_insert(BinaryTree, BTree, array):
     return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 
 
-def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="table"):
+def draw_table(data, title, colorHeader="orange", colorCell="yellow", filename="table"):
     # Crea un nuovo grafico
     figSizeX = 8
-    figSizeY = nTests / 3 + 1
+    figSizeY = n_tests / 3 + 1
     fig, ax = plt.subplots(figsize=(figSizeX, figSizeY))
     plt.title(title)
 
-    data_columns = np.stack(tuple(data), axis=1)
-
     # Unisci le liste di dati come colonne al fine di creare un array bidimensionale di dati: 'data'
     if filename.__contains__("ms"):
-        #data = np.column_stack((data[0], data[1], data[2]), 1)
+        data_columns = np.column_stack((data[0], data[1], data[2]))
         headers = ("N° elementi", "Tempi ABR", "Tempi BA")
-    else:
-        #data = np.column_stack((data[0], data[1], data[2], data[3], data[4]), 1)
+    elif filename.__contains__("wr"):
+        data_columns = np.column_stack((data[0], data[1], data[2], data[3], data[4]))
         headers = ("N° elementi", "Letture ABR", "Letture BA", "Scritture ABR", "Scritture BA")
+    else:
+        data_columns = np.stack(tuple(data), axis=len(data))
+        headers = ("N° elementi", "ABR", "BA")
 
     # Stile tabella
     ax.axis('off')
@@ -272,7 +280,7 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="ta
 
     # Colorazione delle celle
     cell_colors = {
-        cell: (colorHead, {"weight": "bold"})
+        cell: (colorHeader, {"weight": "bold"})
         if table[cell].get_text().get_text() in headers
         else (colorCell, {})
         for cell in table._cells
@@ -286,30 +294,10 @@ def draw_table(data, title, colorHead="orange", colorCell="yellow", filename="ta
         # imposta le proprietà del testo della cella
         table[cell].set_text_props(**text_props)
 
-
-
-    """
-    fig, ax = plt.subplots(figsize=(9, 18))
-
-    data = np.stack(tuple(columns), axis=1)
-
-    ax.axis('off')
-    table = ax.table(cellText=data, colLabels=headers, loc='center', cellLoc='center')
-    table.auto_set_column_width(col=list(range(len(columns))))
-    table.scale(1, 1.5)
-
-    for cell in table._cells:
-        if table[cell].get_text().get_text() in headers:
-            table[cell].set_facecolor("#c1d6ff")
-            table[cell].set_text_props(weight='bold')
-        elif cell[0] % 2 == 0:
-            table[cell].set_facecolor("#deebff")
-    """
-
-    plt.show()
+    #plt.show()
 
     # Salvataggio del grafico
-    fig.savefig(f"plots/tables/{filename}.png", bbox_inches='tight')
+    fig.savefig(f"{directory[1]}/{filename}.png", bbox_inches='tight')
 
     plt.close()
 
@@ -335,7 +323,7 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     #plt.show()
 
     # salvataggio del grafico
-    fig.savefig(f"./plots/side-graphs/{filename}.png", bbox_inches='tight')
+    fig.savefig(f"./{directory[2]}/{filename}.png", bbox_inches='tight')
 
     plt.close()
 
@@ -352,50 +340,47 @@ def draw_comparison_graphs(data1, data2, title, filename):
     #plt.show()
 
     # salvataggio del grafico
-    fig.savefig(f"./plots/comparison-graphs/{filename}.png", bbox_inches='tight')
+    fig.savefig(f"./{directory[3]}/{filename}.png", bbox_inches='tight')
 
     plt.close()
 
 
 if __name__ == '__main__':
-    #step * nTests == 1000
+    START_EXECUTION_TIME = timer()
 
-    #step, nTests = 5, 50
+    # Impostazione dei parametri dell'esperimento
+    #n_tests = 5      # 49 secondi
+    #n_tests = 10     # 1 minuto e 8 secondi
+    #n_tests = 20     # 1 minuto e 52 secondi
+    #n_tests = 25     # 2 minuto e 10 secondi
+    #n_tests = 40     # 3 minuti e 20 secondi
+    #n_tests = 50     # 4 minuti e 13 secondi
+    #n_tests = 100    # 7 minuti e 23 secondi
+    n_tests = 200    # 15 minuti e 8 secondi
 
-    step, nTests = 5, 200
-
-    #step, nTests = 10, 100
-
-    #step, nTests = 20, 50
-    #step, nTests = 25, 40
-
-    #step, nTests = 50, 20
-
-    #step, nTests = 100, 10
-
+    step = 1000 // n_tests
     n_average = 10
-
     ts = [100, 250, 1000]
+    directory = [f"plots/nTests-{n_tests}", f"plots/nTests-{n_tests}/tables", f"plots/nTests-{n_tests}/side-graphs", f"plots/nTests-{n_tests}/comparison-graphs"]
 
 
     # Creazione degli array randomici
     arrays = []
     for _ in range(n_average):
         arrays.append([])
-    for n in range(step, step * (nTests + 1), step):
+    for n in range(step, step * (n_tests + 1), step):
         for l in range(n_average):
             arrays[l].append(random_array(n))
 
     opname1, opname2 = "insert", "search"
 
-    x_axis = [n for n in range(step, step * (nTests + 1), step)]
+    x_axis = [n for n in range(step, step * (n_tests + 1), step)]
     label1, color1 = "Albero Binario di Ricerca", "black"
     label2, color2 = "B-Albero", "red"
     xlabel, ylabel = "Dimensione dell'array (n)", "Tempo di esecuzione [ms]"
     legend1, legend2 = mpatch.Patch(label=label1, color=color1), mpatch.Patch(label=label2, color=color2)
 
     # Creazione delle cartelle
-    directory = ["plots", "plots/tables", "plots/side-graphs", "plots/comparison-graphs"]
     for dir in directory:
         if not os.path.exists(dir):
             os.makedirs(dir)
@@ -404,17 +389,19 @@ if __name__ == '__main__':
     for t in ts:
         print(f"\nTest con t = {t}")
         # Reset delle liste per un certo t
+        """
         InsertTimesTitle, SearchTimesTitle = [], []
         InsertWRTitle, SearchWRTitle = [], []
-        InsertTimesData, SearchTimesData = [[[]]], [[[]]]
-        InsertWRData, SearchWRData = [[[]]], [[[]]]
+        InsertTimesData, SearchTimesData = [], []
+        InsertWRData, SearchWRData = [], []
+        """
 
         timesInsertBin, timesInsertBT = [], []
         timesSearchBin, timesSearchBT = [], []
         readInsertBin, readInsertBT, writtenInsertBin, writtenInsertBT = [], [], [], []
         readSearchBin, readSearchBT, writtenSearchBin, writtenSearchBT = [], [], [], []
 
-        for i in range(nTests):
+        for i in range(n_tests):
             # Reset delle liste tempi per una certa dimensione array n
             BTrees, BinaryTrees = [], []
             tInsertBin, tInsertBT = 0, 0
@@ -430,7 +417,8 @@ if __name__ == '__main__':
                 BinaryTrees.append(BinaryTree())
                 BTrees.append(BTree(t))
 
-                print(f"\nArray {i + 1}; n = {step * (i + 1)} test = {j + 1}")
+                print(
+                    f"\nArray: {i * n_average + j + 1}/{n_tests * n_average}; tipo: {i + 1}/{n_tests}; dimensione: {step * (i + 1)}; test: {j + 1}/{n_average}; t del B-albero: {t}")
 
                 # Test inserimento
                 i1, i2, i3, i4, i5, i6 = test_insert(BinaryTrees[j], BTrees[j], arrays[j][i])
@@ -440,6 +428,12 @@ if __name__ == '__main__':
                 rInsertBT += i4
                 wInsertBin += i5
                 wInsertBT += i6
+
+                # Reset dei contatori dei nodi letti e scritti degli Alberi
+                BinaryTrees[j].node_read = 0
+                BinaryTrees[j].node_written = 0
+                BTrees[j].node_read = 0
+                BTrees[j].node_written = 0
 
                 # Test ricerca
                 s1, s2, s3, s4, s5, s6 = test_search(BinaryTrees[j], BTrees[j], arrays[j][i])
@@ -468,38 +462,38 @@ if __name__ == '__main__':
 
         # end ciclo for
 
-        # Creazione dei dati per le tabelle
-        InsertTimesData.append([
-            [n for n in range(step, step * (nTests+1), step)],
+        # Aggregazione dati per le tabelle
+        InsertTimesData = [
+            [n for n in range(step, step * (n_tests + 1), step)],
             ["{:.3e}".format(val) for val in timesInsertBin],
             ["{:.3e}".format(val) for val in timesInsertBT]
-        ])
-        InsertTimesTitle.append(f"Inserimento con t = {t}: tempi di esecuzione [ms]")
+        ]
+        InsertTimesTitle = f"Inserimento con t = {t}: tempi di esecuzione [ms]"
 
-        InsertWRData.append([
-            [n for n in range(step, step * (nTests + 1), step)],
+        InsertWRData = [
+            [n for n in range(step, step * (n_tests + 1), step)],
             ["{:.3e}".format(val) for val in readInsertBin],
             ["{:.3e}".format(val) for val in readInsertBT],
             ["{:.3e}".format(val) for val in writtenInsertBin],
             ["{:.3e}".format(val) for val in writtenInsertBT]
-        ])
-        InsertWRTitle.append(f"Inserimento con t = {t}: letture e scritture")
+        ]
+        InsertWRTitle = f"Inserimento con t = {t}: letture e scritture"
 
-        SearchTimesData.append([
-            [n for n in range(step, step * (nTests + 1), step)],
+        SearchTimesData = [
+            [n for n in range(step, step * (n_tests + 1), step)],
             ["{:.3e}".format(val) for val in timesSearchBin],
             ["{:.3e}".format(val) for val in timesSearchBT]
-        ])
-        SearchTimesTitle.append(f"Ricerca con t = {t}: tempi di esecuzione [ms]")
+        ]
+        SearchTimesTitle = f"Ricerca con t = {t}: tempi di esecuzione [ms]"
 
-        SearchWRData.append([
-            [n for n in range(step, step * (nTests + 1), step)],
+        SearchWRData = [
+            [n for n in range(step, step * (n_tests + 1), step)],
             ["{:.3e}".format(val) for val in readSearchBin],
             ["{:.3e}".format(val) for val in readSearchBT],
             ["{:.3e}".format(val) for val in writtenSearchBin],
             ["{:.3e}".format(val) for val in writtenSearchBT]
-        ])
-        SearchWRTitle.append(f"Ricerca con t = {t}: letture e scritture")
+        ]
+        SearchWRTitle = f"Ricerca con t = {t}: letture e scritture"
 
         filename1 = f"{opname1}-ms-t{t}"
         filename2 = f"{opname2}-ms-t{t}"
@@ -510,18 +504,15 @@ if __name__ == '__main__':
         filename7 = f"{opname1}-w-t{t}"
         filename8 = f"{opname2}-w-t{t}"
 
-        """
         # Creazione delle tabelle
-        print(f"\nCreazione delle tabelle per t = {t} e salvo nella cartella {directory[1]}")
-        index = ts.index(t)
-        draw_table(InsertTimesData[index], InsertTimesTitle[index], "green", "lightgreen", filename1)
-        draw_table(SearchTimesData[index], InsertTimesTitle[index], "purple", "pink", filename2)
-        draw_table(InsertWRData[index], InsertWRTitle[index], "green", "lightgreen", filename3)
-        draw_table(SearchWRData[index], SearchWRTitle[index], "purple", "pink", filename4)
-        """
+        print(f"\n\nCreazione delle tabelle per t = {t} e salvo nella cartella {directory[1]}")
+        draw_table(InsertTimesData, InsertTimesTitle, "green", "lightgreen", filename1)
+        draw_table(SearchTimesData, InsertTimesTitle, "purple", "pink", filename2)
+        draw_table(InsertWRData, InsertWRTitle, "green", "lightgreen", filename3)
+        draw_table(SearchWRData, SearchWRTitle, "purple", "pink", filename4)
 
         # Creazione dei grafici
-        print(f"Creazione dei grafici per t = {t} e salvo nella cartella {directory[2]}")
+        print(f"\nCreazione dei grafici accanto per t = {t} e salvo nella cartella {directory[2]}")
         draw_side_graphs(timesInsertBin, timesInsertBT, "Inserimento", filename1)
         draw_side_graphs(timesSearchBin, timesSearchBT, "Ricerca", filename2)
         draw_side_graphs(readInsertBin, readInsertBT, "Inserimento: letture", filename5)
@@ -530,10 +521,20 @@ if __name__ == '__main__':
         draw_side_graphs(writtenSearchBin, writtenSearchBT, "Ricerca: scritture", filename8)
 
         # Confronto dei grafici
-        print(f"Confronto dei grafici per t = {t} e salvo nella cartella {directory[3]}\n")
+        print(f"\nCreazione dei grafici di confronto per t = {t} e salvo nella cartella {directory[3]}\n\n")
         draw_comparison_graphs(timesInsertBin, timesInsertBT, "Confronto inserimento", filename1)
         draw_comparison_graphs(timesSearchBin, timesSearchBT, "Confronto ricerca", filename2)
         draw_comparison_graphs(readInsertBin, readInsertBT, "Confronto inserimento: letture", filename5)
         draw_comparison_graphs(readSearchBin, readSearchBT, "Confronto ricerca: letture", filename6)
         draw_comparison_graphs(writtenInsertBin, writtenInsertBT, "Confronto inserimento: scritture", filename7)
         draw_comparison_graphs(writtenSearchBin, writtenSearchBT, "Confronto ricerca: scritture", filename8)
+
+
+    END_EXECUTION_TIME = timer()
+    EXECUTION_TIME = END_EXECUTION_TIME - START_EXECUTION_TIME
+    seconds = EXECUTION_TIME % 60 // 1
+    minutes = EXECUTION_TIME // 60
+    if EXECUTION_TIME < 60:
+        print(f"\nTempo totale di esecuzione: {seconds} secondi")
+    else:
+        print(f"\nTempo totale di esecuzione: {minutes} minuti e {seconds} secondi")
