@@ -362,7 +362,7 @@ if __name__ == '__main__':
     n_average = 10
     #n_average = 20   #28 minuti e 52 secondi con n_tests=200
     ts = [100, 250, 1000]
-    directory = [f"plots/nTests-{n_tests}", f"plots/nTests-{n_tests}/tables", f"plots/nTests-{n_tests}/side-graphs", f"plots/nTests-{n_tests}/comparison-graphs"]
+    directory = [f"plots/n-tests-{n_tests}", f"plots/n-tests-{n_tests}/tables", f"plots/n-tests-{n_tests}/side-graphs", f"plots/n-tests-{n_tests}/comparison-graphs"]
 
 
     # Creazione degli array randomici
