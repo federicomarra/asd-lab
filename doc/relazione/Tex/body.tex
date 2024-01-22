@@ -196,11 +196,11 @@ Per un B-albero, le operazioni di base richiedono un tempo proporzionale all'alt
         \hline
         Spazio & \(\Theta(n)\) & \(\Theta(n)\)\\
         \hline
-        \textcolor{red}{Inserimento} & \(O(\log n)\) & \(O(\log n)\)\\
+        \textcolor{red}{Inserimento} & \(O(\log_t n)\) & \(O(\log n)\)\\
         \hline
-        \textcolor{red}{Ricerca} & \(O(\log n)\) & \(O(\log n)\)\\
+        \textcolor{red}{Ricerca} & \(O(\log_t n)\) & \(O(\log n)\)\\
         \hline
-        Cancellazione & \(O(\log n)\) & \(O(\log n)\)\\
+        Cancellazione & \(O(\log_t n)\) & \(O(\log_t n)\)\\
         \hline
     \end{tabular}
     \caption{Complessità degli algoritmi di B-albero}
@@ -319,7 +319,7 @@ In questa parte descriverò le funzionalità di ogni metodo delle classi degli a
 
 \subsection{Dati utilizzati}
 \label{sec:DatiUtilizzati_1}
-L'esperimento che ho svolto si divide prima di tutto per il numero di nodi che sono andato ad inserire nei due alberi. Quindi divideremo l'esperimento in 4 parti:
+L'esperimento che ho svolto si divide prima di tutto per il numero di nodi che sono andato ad inserire nei due alberi. Quindi divideremo l'esperimento in tre parti:
 
 \begin{itemize}
     \item Alberi con $t=\textbf{100}$
@@ -327,14 +327,21 @@ L'esperimento che ho svolto si divide prima di tutto per il numero di nodi che s
     \item Alberi con $t=\textbf{1000}$
 \end{itemize}
 
-Prendendo il caso della randomizzazione ho deciso di fare un test per verificare se il range in cui prendo i numeri influenzi il tempo che ci mette per lo svolgimento dell'algoritmo. Questo caso è stato testato con gli alberi da 1000 elementi per avere una miglior idea delle tempistiche. I range di valori che ho usato sono i seguenti:
+Prendendo il caso della randomizzazione ho deciso di fare un test per verificare se il range in cui prendo i numeri influenzi il tempo che ci mette per lo svolgimento dell'algoritmo. Questo caso è stato testato con gli alberi da $t$ elementi per avere una miglior idea delle tempistiche. I range di valori che ho usato sono i seguenti:
 
-\textbf{50-1000, con uno step di 50}
-Quindi ho creato 20 array su cui testare il tutto, al variare della $\textbf{t}$
+\textbf{50-1000, con uno step di 50 e n\textunderscore tests di 200}
+Quindi ho creato 200 dimensioni di cui 10 array per ogni dimensione su cui testare il tutto e prendere come valore la media di questi 10 tempi, al variare della $\textbf{t}$
+
+\begin{verbatim}
+n_tests = 200
+step = 1000 // n_tests    # step==50
+n_average = 10
+ts = [100, 250, 1000]
+\end{verbatim}
 
 \subsection{Misurazioni}
 \label{sec:Misurazioni_1}
-I metodi di calcolo dei tempi nei metodi \textbf{test\textunderscore insert} e \textbf{test\textunderscore search} sono di due tipi. Innanzitutto dobbiamo prendere il tempo prima dell'esecuzione del metodo e quello dopo la sua esecuzione:
+I metodi di calcolo dei tempi nei metodi \textbf{test\textunderscore insert} e \textbf{test\textunderscore search} sono di due tipi. Innanzitutto dobbiamo prendere il tempo prima dell'esecuzione del metodo e quello dopo la sua esecuzione, quindi costruirò due funzioni di test, rispettivamente una per l'inserimento e una per la ricerca, nel modo riportato sotto:
 
 \begin{verbatim}
 def test_search(BinaryTree, BTree, array):
@@ -342,14 +349,15 @@ def test_search(BinaryTree, BTree, array):
 
     timesBin = 0
     timesBT = 0
-    for i in range(len(array)):
+
+    for k in range(len(array)):
         start = timer()
-        BinaryTree.search(BinaryTree.root, array[i])
+        BinaryTree.search(BinaryTree.root, array[k])
         end = timer()
         timesBin += (end - start) * 1000
 
         start = timer()
-        BTree.search(array[i])
+        BTree.search(array[k])
         end = timer()
         timesBT += (end - start) * 1000
 
@@ -365,18 +373,21 @@ def test_search(BinaryTree, BTree, array):
 
     return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 
+
 def test_insert(BinaryTree, BTree, array):
     print(f"\nInserimento di {len(array)} elementi:")
+
     timesBin = 0
     timesBT = 0
-    for i in range(len(array)):
+
+    for k in range(len(array)):
         start = timer()
-        BinaryTree.insert(BinaryTreeNode(array[i]))
+        BinaryTree.insert(BinaryTreeNode(array[k]))
         end = timer()
         timesBin += (end - start) * 1000
 
         start = timer()
-        BTree.insert(array[i])
+        BTree.insert(array[k])
         end = timer()
         timesBT += (end - start) * 1000
 
@@ -393,7 +404,75 @@ def test_insert(BinaryTree, BTree, array):
     return timesBin, timesBT, readBin, readBT, writtenBin, writtenBT
 \end{verbatim}
 
-Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e in \textbf{end}. La loro sottrazione mi darà il tempo trascorso in nanosecondi, che moltiplicherò per 1000 per ottenerlo in millisecondi.     
+Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e in \textbf{end}. La loro sottrazione mi darà il tempo trascorso in nanosecondi, che moltiplicherò per 1000 per ottenerlo in millisecondi.
+\\Per un certo $t$ nel main chiamo le funzioni di test così:
+\begin{verbatim}
+for i in range(n_tests):
+    # Reset delle liste tempi per una certa dimensione array n
+    BTrees, BinaryTrees = [], []
+    tInsertBin, tInsertBT = 0, 0
+    rInsertBin, rInsertBT = 0, 0
+    wInsertBin, wInsertBT = 0, 0
+
+    tSearchBin, tSearchBT = 0, 0
+    rSearchBin, rSearchBT = 0, 0
+    wSearchBin, wSearchBT = 0, 0
+
+    for j in range(n_average):
+        # Inizializzazione alberi
+        BinaryTrees.append(BinaryTree())
+        BTrees.append(BTree(t))
+
+        print(f"\nArray: {i * n_average + j + 1}/{n_tests * n_average};
+                  tipo: {i + 1}/{n_tests};
+                  dimensione: {step * (i + 1)};
+                  test: {j + 1}/{n_average};
+                  t del B-albero: {t}"
+        )
+
+        # Test inserimento
+        i1, i2, i3, i4, i5, i6 = test_insert(BinaryTrees[j], BTrees[j],
+                                             arrays[j][i])
+        tInsertBin += i1
+        tInsertBT += i2
+        rInsertBin += i3
+        rInsertBT += i4
+        wInsertBin += i5
+        wInsertBT += i6
+
+        # Reset dei contatori dei nodi letti e scritti degli Alberi
+        BinaryTrees[j].node_read = 0
+        BinaryTrees[j].node_written = 0
+        BTrees[j].node_read = 0
+        BTrees[j].node_written = 0
+
+        # Test ricerca
+        s1, s2, s3, s4, s5, s6 = test_search(BinaryTrees[j], BTrees[j],
+                                             arrays[j][i])
+        tSearchBin += s1
+        tSearchBT += s2
+        rSearchBin += s3
+        rSearchBT += s4
+        wSearchBin += s5
+        wSearchBT += s6
+        
+
+    # Media inserimento
+    timesInsertBin.append(tInsertBin / n_average)
+    timesInsertBT.append(tInsertBT / n_average)
+    readInsertBin.append(rInsertBin / n_average)
+    readInsertBT.append(rInsertBT / n_average)
+    writtenInsertBin.append(wInsertBin / n_average)
+    writtenInsertBT.append(wInsertBT / n_average)
+
+    # Media ricerca
+    timesSearchBin.append(tSearchBin / n_average)
+    timesSearchBT.append(tSearchBT / n_average)
+    readSearchBin.append(rSearchBin / n_average)
+    readSearchBT.append(rSearchBT / n_average)
+    writtenSearchBin.append(wSearchBin / n_average)
+    writtenSearchBT.append(wSearchBT / n_average)
+\end{verbatim}
 
 \newpage
 \subsection{Risultati sperimentali e commenti analitici}
@@ -402,7 +481,7 @@ Per calcolare i tempi salvo in \textbf{start} il tempo prima dell'operazione, e 
 Guardo prima i tempi di esecuzione:
 
 \subsubsection{Alberi a confronto nei tempi con $t = 100$}
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -421,7 +500,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabella tempi con $t=100$}
     \label{fig:tabletimest100}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -456,7 +535,7 @@ Guardo prima i tempi di esecuzione:
 \end{figure}
 
 \subsubsection{Alberi a confronto nei tempi con $t = 250$}
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -475,7 +554,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabella tempi con $t=250$}
     \label{fig:tabletimest250}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -512,7 +591,7 @@ Guardo prima i tempi di esecuzione:
 
 
 \subsubsection{Alberi a confronto nei tempi con $t = 1000$}
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -531,7 +610,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabella tempi con $t=1000$}
     \label{fig:tabletimest1000}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -571,7 +650,7 @@ Guardo prima i tempi di esecuzione:
 
 \subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 100$}
 
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -590,7 +669,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabelle scritture e letture con $t=100$}
     \label{fig:tablewr100}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -662,7 +741,7 @@ Guardo prima i tempi di esecuzione:
 
 \subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 250$}
 
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -681,7 +760,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabelle scritture e letture con $t=250$}
     \label{fig:tablewr250}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -752,7 +831,7 @@ Guardo prima i tempi di esecuzione:
 
 \subsubsection{Alberi a confronto nel numero di letture e scritture con $t = 1000$}
 
-\begin{comment}
+
 \begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.49\textwidth}
@@ -771,7 +850,7 @@ Guardo prima i tempi di esecuzione:
     \caption{Tabelle scritture e letture con $t=1000$}
     \label{fig:tablewr1000}
 \end{figure}
-\end{comment}
+
 
 \begin{figure}[H]
     \centering
@@ -848,13 +927,19 @@ Possiamo dare le seguenti conclusioni:
     \item Complessità degli algoritmi:\\
         I metodi di inserimento e ricerca nei B-alberi hanno una complessità asintotica ottimale di $O(h) = O(\log_t n)$, dove $n$ è il numero di nodi nell'albero. Questa complessità è mantenuta anche nel caso peggiore, garantendo prestazioni efficienti.
     \item Tempo di esecuzione:\\
-        Nel caso di un inserimento e la ricerca in catena nei B-alberi mantengono una complessità temporale ottimale di $O(log_t n * nTests)$, simile agli alberi ABR. Tuttavia, nei casi più complessi, la complessità è notevolmente migliorata rispetto agli ABR, mantenendo tempi di esecuzione più bassi.
+        Nel caso di un inserimento e la ricerca in catena nei B-alberi mantengono una complessità temporale ottimale di $O(log_t n * n\textunderscore tests)$, simile agli alberi ABR. Tuttavia, nei casi più complessi, la complessità è notevolmente migliorata rispetto agli ABR, mantenendo tempi di esecuzione più bassi.
     
     \item Influenza del riequilibrio:\\
         Nei B-alberi, il riequilibrio è intrinseco al processo di inserimento e non richiede passi aggiuntivi come negli ABR. Questo contribuisce a tempi di esecuzione più consistenti e prevedibili per l'inserimento e la ricerca, indipendentemente dal tipo di input.
     
     \item Variazione dei tempi con range di chiavi:\\
         Nel caso di operazioni casuali, i B-alberi possono mantenere tempi di esecuzione stabili anche con variazioni nel range delle chiavi. La struttura bilanciata dei B-alberi riduce l'impatto della distribuzione delle chiavi sull'efficienza delle operazioni.
+
+    \item Letture e scritture nell'inserimento:\\
+        Notiamo che in entrambi gli alberi il numero delle letture e delle scritture cresce in modo lineare e nel caso del BA torna poiché in certi casi il numero di elementi da inserire ($n$) è minore di $t$
+
+    \item Letture e scritture nella ricerca:\\
+        Nel caso delle letture, come nel caso dell'inserimento avremo un andamento lineare al crescere del caso dei B-alberi, ma nel caso dell'ABR invece avremo un numero di letture che essendo $O(h)$ per una singola ricerca, avremo che il totale sarà $O(n*h)$. L'operazione di ricerca non richiede scritture, e ciò è confermato sperimentalmente come visibile nei grafici 20, 27 e 34.
     
     \item Conclusioni generali:\\
         I B-alberi dimostrano una robusta efficienza nelle operazioni di inserimento e ricerca, con una complessità che scala in modo ottimale con l'aumentare della dimensione dell'albero. Il riequilibrio automatico contribuisce a mantenere prestazioni stabili e prevedibili in una varietà di scenari, rendendo i B-alberi una scelta affidabile per applicazioni che richiedono una gestione efficiente di grandi quantità di dati.
