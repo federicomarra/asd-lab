@@ -308,9 +308,9 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     # Insertion sort, grafico a sinistra
     left.plot(x_axis, left_data, color=color1)
     left.set_title(label1)
-    if filename.__contains__("r"):
+    if filename.__contains__("r-t"):
         left.set_ylabel("N° letture")
-    elif filename.__contains__("w"):
+    elif filename.__contains__("w-t"):
         left.set_ylabel("N° scritture")
     else:
         left.set_ylabel(ylabel)
@@ -320,9 +320,9 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     # Quick sort, grafico a destra
     right.plot(x_axis, right_data, color=color2)
     right.set_title(label2)
-    if filename.__contains__("r"):
+    if filename.__contains__("r-t"):
         right.set_ylabel(rlabel)
-    elif filename.__contains__("w"):
+    elif filename.__contains__("w-t"):
         right.set_ylabel(wlabel)
     else:
         right.set_ylabel(ylabel)
@@ -344,9 +344,9 @@ def draw_comparison_graphs(data1, data2, title, filename):
     plot.plot(x_axis, data2, label=label2, color=color2)
     plot.set_title(title)
     plot.set_xlabel(xlabel)
-    if filename.__contains__("r"):
+    if filename.__contains__("r-t"):
         plot.set_ylabel(rlabel)
-    elif filename.__contains__("w"):
+    elif filename.__contains__("w-t"):
         plot.set_ylabel(wlabel)
     else:
         plot.set_ylabel(ylabel)
@@ -375,8 +375,8 @@ if __name__ == '__main__':
 
     step = 1000 // n_tests
     #n_average = 5    # 9 minuti e 22 secondi con n_tests=200
-    n_average = 10   # 15 minuti e 8 secondi con n_tests=200
-    #n_average = 20   # 32 minuti e 45 secondi con n_tests=200
+    #n_average = 10   # 15 minuti e 8 secondi con n_tests=200
+    n_average = 20   # 32 minuti e 45 secondi con n_tests=200
     ts = [100, 250, 1000]
     directory = [f"plots/n-tests-{n_tests}", f"plots/n-tests-{n_tests}/tables", f"plots/n-tests-{n_tests}/side-graphs", f"plots/n-tests-{n_tests}/comparison-graphs"]
 
