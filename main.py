@@ -308,15 +308,25 @@ def draw_side_graphs(left_data, right_data, plot_title, filename):
     # Insertion sort, grafico a sinistra
     left.plot(x_axis, left_data, color=color1)
     left.set_title(label1)
+    if filename.__contains__("r"):
+        left.set_ylabel("N° letture")
+    elif filename.__contains__("w"):
+        left.set_ylabel("N° scritture")
+    else:
+        left.set_ylabel(ylabel)
     left.set_xlabel(xlabel)
-    left.set_ylabel(ylabel)
     #left.legend(handles=[legend1])
 
     # Quick sort, grafico a destra
     right.plot(x_axis, right_data, color=color2)
     right.set_title(label2)
+    if filename.__contains__("r"):
+        right.set_ylabel(rlabel)
+    elif filename.__contains__("w"):
+        right.set_ylabel(wlabel)
+    else:
+        right.set_ylabel(ylabel)
     right.set_xlabel(xlabel)
-    right.set_ylabel(ylabel)
     #right.legend(handles=[legend2])
 
     fig.suptitle(plot_title, fontsize=16)
@@ -334,7 +344,12 @@ def draw_comparison_graphs(data1, data2, title, filename):
     plot.plot(x_axis, data2, label=label2, color=color2)
     plot.set_title(title)
     plot.set_xlabel(xlabel)
-    plot.set_ylabel(ylabel)
+    if filename.__contains__("r"):
+        plot.set_ylabel(rlabel)
+    elif filename.__contains__("w"):
+        plot.set_ylabel(wlabel)
+    else:
+        plot.set_ylabel(ylabel)
     plot.legend(handles=[legend1, legend2])
 
     #plt.show()
@@ -359,8 +374,9 @@ if __name__ == '__main__':
     n_tests = 200    # 15 minuti e 8 secondi
 
     step = 1000 // n_tests
-    n_average = 10
-    #n_average = 20   #28 minuti e 52 secondi con n_tests=200
+    #n_average = 5    # 9 minuti e 22 secondi con n_tests=200
+    n_average = 10   # 15 minuti e 8 secondi con n_tests=200
+    #n_average = 20   # 28 minuti e 52 secondi con n_tests=200
     ts = [100, 250, 1000]
     directory = [f"plots/n-tests-{n_tests}", f"plots/n-tests-{n_tests}/tables", f"plots/n-tests-{n_tests}/side-graphs", f"plots/n-tests-{n_tests}/comparison-graphs"]
 
@@ -379,6 +395,7 @@ if __name__ == '__main__':
     label1, color1 = "Albero Binario di Ricerca", "black"
     label2, color2 = "B-Albero", "red"
     xlabel, ylabel = "Dimensione dell'array (n)", "Tempo di esecuzione [ms]"
+    rlabel, wlabel = "N° letture", "N° scritture"
     legend1, legend2 = mpatch.Patch(label=label1, color=color1), mpatch.Patch(label=label2, color=color2)
 
     # Creazione delle cartelle
